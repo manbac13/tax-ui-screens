@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acurat — Clients (v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.tbl-scroll{overflow-x:auto}
+.row-link::after{content:"";position:absolute;inset:0}
+.crow{cursor:pointer;transition:background .15s}
+.crow:hover{background:#F8FAFC}
+.row-link:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+@media (min-width:1200px){.tbl-scroll{overflow:visible}}
+.v2-banner{position:relative;overflow:hidden}.v2-banner>*{position:relative}.v2-banner>.v2-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(15,23,42,0.08) 0 1px,transparent 1px 16px);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%)}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+<style>
+/* Clients page: expandable client → engagement list */
+.kpi.warn.on b,.kpi.warn.on{color:#B91C1C}
+
+.cl-table{border:1px solid #E5E7EB;border-radius:12px;background:#fff;overflow:hidden}
+.cl-row{display:grid;grid-template-columns:36px minmax(250px,2fr) minmax(130px,1fr) minmax(120px,.9fr) minmax(170px,1.2fr) minmax(100px,.8fr) 64px 84px;align-items:center;column-gap:16px;padding:0 20px 0 12px}
+.cl-h{height:44px;background:#EEF2F6;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#475569}
+.cl-h .c,.cell.c{text-align:center;justify-content:center}
+.cgrp{border-top:1px solid #F0F1F3}
+.cl-row.main{min-height:72px;padding-top:12px;padding-bottom:12px;cursor:pointer;align-items:start}
+.cl-row.main:hover{background:#FAFBFC}
+.cgrp.is-open>.cl-row.main{background:#F8FAFC}
+.exp{width:28px;height:28px;margin-top:6px;border:0;border-radius:6px;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;padding:0}
+.exp:hover{background:#EEF1F4}
+.exp svg{transition:transform .15s}
+.cgrp.is-open .exp svg{transform:rotate(90deg)}
+/* scoped to the table so they don't leak into the rail account pill (.rail .me .who/.av) */
+.cl-table .who{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.cl-table .av{flex:none;width:40px;height:40px;border-radius:10px;background:#2F7D3B;color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.wt{display:flex;flex-direction:column;min-width:0}
+.wt .nm{font-size:15px;line-height:22px;font-weight:600;color:#111827;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wt .nm:hover{color:#1F6A2E;text-decoration:underline}
+.wt small,.cell small{font-size:12px;line-height:18px;color:#64748B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wt .ctype{align-self:flex-start;margin-top:4px;height:20px;padding:0 7px;border-radius:5px;background:#F1F5F9;color:#475569;font-size:11px;line-height:20px;font-weight:600}
+.cell{display:flex;flex-direction:column;min-width:0;font-size:14px;line-height:20px;color:#334155}
+.cell b{font-weight:600;color:#111827}
+.mute{color:#94A3B8}
+.conn{align-self:flex-start;height:22px;padding:0 8px;border-radius:6px;font-size:12px;line-height:22px;font-weight:600;white-space:nowrap}
+.conn.accepted{background:#E3F1E5;color:#1F6A2E}
+.conn.partial{background:#E0F2FE;color:#075985}
+.conn.invited{background:#FEF3C7;color:#92400E}
+.conn.none{background:#F1F5F9;color:#475569}
+.cell .lnk{align-self:flex-start;font-size:12px;margin-top:1px}
+.r{font-size:12px;font-weight:600}
+.r.bad{color:#B91C1C}.r.soon{color:#B45309}.r.later{color:#475569}.r.ok{color:#1F6A2E}
+.cell .r{line-height:18px}
+.unread{min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#FEE2E2;color:#B91C1C;font-size:12px;line-height:22px;font-weight:700;text-align:center}
+
+.subs{background:#F8FAFC;padding:0 0 12px}
+.cl-row.sub{min-height:52px;border-top:1px solid #EEF1F4;margin:0 12px 0 0}
+.cl-row.sub .who{align-items:center;padding-left:52px}
+.cl-row.sub .wt .nm{font-size:14px;font-weight:600}
+.cl-row.sub.done .nm,.cl-row.sub.done .cell{color:#94A3B8}
+.fm{flex:none;min-width:44px;height:22px;padding:0 6px;border-radius:5px;color:#fff;font-size:11px;line-height:22px;font-weight:700;text-align:center}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap}
+.st i{width:7px;height:7px;border-radius:50%}
+.openbtn{align-self:flex-start;height:30px;display:inline-flex;align-items:center;padding:0 14px;border:1px solid #E5E7EB;border-radius:999px;background:#fff;font-size:13px;font-weight:600;color:#111827;text-decoration:none}
+.openbtn:hover{border-color:#2F7D3B;color:#1F6A2E}
+.sub-add{padding:10px 0 0 64px}
+.addeng{height:32px;padding:0 14px;border:1px dashed #CBD5E1;border-radius:999px;background:#fff;font:600 13px Inter,system-ui,sans-serif;color:#334155}
+.addeng:hover{border-color:#2F7D3B;color:#1F6A2E}
+.cl-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:#475569}
+.cgrp.is-new>.cl-row.main{background:#F2F8F3}
+@media (max-width:1380px){.cl-search{flex-basis:160px}.cl-row{grid-template-columns:36px minmax(220px,2fr) minmax(120px,1fr) minmax(110px,.9fr) minmax(160px,1.2fr) 64px}.cl-h>:nth-child(6),.cl-h>:nth-child(8),.cl-row.main>:nth-child(6),.cl-row.main>:nth-child(8),.cl-row.sub>:nth-child(6),.cl-row.sub>:nth-child(7){display:none}}
+</style>
+</head>
+<body data-ctx="list">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");try{if(b.hasAttribute("data-focusable")&&sessionStorage.getItem("acurat.focus")==="1")b.classList.add("focus")}catch(e){}})();</script>
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="index.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group"><div class="sec">Platform</div>
+      <a href="index.html" aria-current="page" title="Clients"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg><span class="lbl">Clients</span></a>
+      <a href="engagements.html" title="Engagements"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg><span class="lbl">Engagements</span></a>
+      <a href="#" title="Review"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span class="lbl">Review</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="admin.html" title="Administration"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Administration</span></a>
+      <a href="docs.html" title="Documentation"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg><span class="lbl">Documentation</span></a>
+      <a href="help.html" title="Help &amp; Support"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span class="lbl">Help &amp; Support</span></a>
+      <div class="me" title="demo@acurat.com"><div class="av" aria-hidden="true">D</div><div class="who lbl"><b>demo@acurat.com</b><span>ACCOUNT</span></div></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; background: #F8FAFC; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 14px;">
+    <div class="list-head"><div class="lh-t"><h1>Clients</h1><p>Welcome back, admin</p></div>
+      <div class="lh-r"><div class="kpis"><span class="kpi"><b id="kpiClients">0</b>clients</span><span class="kpi"><b id="kpiEng">0</b>engagements</span><span class="kpi warn" id="kpiOver"><b>0</b>overdue</span><span class="kpi"><b id="kpiSoon">0</b>due in 30 d</span></div><button class="ic" title="Export to Excel" aria-label="Export to Excel"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button><button class="add" id="newClient" aria-haspopup="dialog"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add Client</button></div></div>
+
+    <!-- Toolbar: same four filters as before; the rest live under More filters -->
+    <div class="cl-bar">
+      <label class="cl-search"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="sr">Search</span><input id="q" type="search" placeholder="Search clients, people, emails or entities"></label>
+      <label class="sel"><span class="sr">Client type</span><select id="fType"><option value="">All client types</option><option>Family office</option><option>Business owner</option><option>Business</option><option>Individual</option></select></label>
+      <label class="sel"><span class="sr">Engagement type</span><select id="fForm"><option value="">All engagement types</option><option>1040</option><option>1041</option><option>1065</option><option>1120</option><option>1120-S</option><option>709</option><option>990-PF</option><option>1099-NEC</option></select></label>
+      <label class="sel"><span class="sr">Assigned to</span><select id="fTeam"><option value="">Assigned to</option><option>Ashok Sudeep</option><option>Rita K.</option><option>Sam M.</option></select></label>
+      <button class="mf" id="moreBtn" aria-expanded="false" aria-controls="morePanel"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>More filters<span class="mf-n" id="moreN" hidden>0</span></button>
+      <span class="bar-sp"></span>
+      <button class="ic" id="toggleAll" title="Expand all" aria-label="Expand all"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></button>
+    </div>
+
+    <div class="cl-more" id="morePanel" hidden>
+      <label><span>Engagement status</span><select id="fStatus"><option value="">Any status</option><option value="open">Open (not filed)</option><option>Not started</option><option>Letter unsigned</option><option>Gathering docs</option><option>Preparing</option><option>In review</option><option>Ready to deliver</option><option>Filed</option></select></label>
+      <label><span>Portal connection</span><select id="fConn"><option value="">Any connection status</option><option value="accepted">Accepted</option><option value="partial">Partly connected</option><option value="invited">Invited</option><option value="none">Not invited</option></select></label>
+      <label><span>Due date</span><select id="fDue"><option value="">Any due date</option><option value="over">Overdue</option><option value="30">Due in 30 days</option><option value="90">Due in 90 days</option></select></label>
+      <label><span>Tax year</span><select id="fYear"><option value="">Any tax year</option><option>2026</option><option>2025</option><option>2024</option></select></label>
+      <label class="chk"><input type="checkbox" id="fUnread"> Has unread messages</label>
+    </div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="cl-table" role="table" aria-label="Clients and their engagements">
+      <div class="cl-row cl-h" role="row">
+        <span role="columnheader"></span><span role="columnheader">Client</span><span role="columnheader">Portal</span><span role="columnheader">Engagements</span><span role="columnheader">Next due</span><span role="columnheader">Team</span><span role="columnheader" class="c">Unread</span><span role="columnheader">Activity</span>
+      </div>
+      <div id="rows"></div>
+    </div>
+
+    <div class="cl-foot"><span id="showing"></span>
+      <div class="pg"><button disabled aria-label="Previous page">‹</button><button aria-current="page">1</button><button disabled aria-label="Next page">›</button></div>
+    </div>
+
+    <!-- Add client dialog -->
+    <div class="dlg-back" id="addDlg" hidden>
+      <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="addTitle" aria-describedby="addSub">
+        <div class="dlg-h">
+          <div><h2 id="addTitle">Add client</h2><p id="addSub">A client is the relationship: one household, family office or business. Add its people, entities and engagements after.</p></div>
+          <button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <form id="addForm" novalidate>
+          <div class="dlg-b">
+            <div class="dfld full" data-f="name"><label for="acName">Client name <i aria-hidden="true">*</i></label><input id="acName" placeholder="Smith Family" autocomplete="off" required><p class="ferr" id="acName-err" hidden></p></div>
+            <div class="dfld" data-f="email"><label for="acEmail">Contact email <i aria-hidden="true">*</i></label><input id="acEmail" type="email" placeholder="name@example.com" autocomplete="off" required><p class="ferr" id="acEmail-err" hidden></p></div>
+            <div class="dfld" data-f="phone"><label for="acPhone">Phone</label><input id="acPhone" type="tel" placeholder="(555) 000-0000" autocomplete="off"></div>
+          </div>
+          <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn">Create client</button></div>
+        </form>
+      </div>
+    </div>
+
+<script>
+(function(){
+  /* Demo data. Due dates follow the federal rules: 1040/709 Apr 15 (ext. Oct 15), 1065/1120-S Mar 15 (ext. Sep 15),
+     1041 15th day of 4th month after year-end (ext. 5½ months), 1120 15th day of 4th month (FY), 990-PF 15th day of 5th month (ext. 6 months),
+     1099-NEC Jan 31. Weekend/holiday dates roll to the next business day.
+     Smith Family rows match smith-engagements.html and the engagement switcher. */
+  var CLIENTS=[
+    {id:'smith',name:'Smith Family',type:'Family office',contact:'John E Smith',email:'myfirm.client+1005@gmail.com',href:'smith-overview.html',
+     conn:{s:'partial',label:'2 of 3 connected',sub:'John’s invite pending',action:'Resend to John'},team:'Ashok Sudeep',unread:2,activity:'5 h ago',
+     eng:[
+      {form:'1040',name:'John E & Emily Smith',note:'MFJ',year:2025,status:'Preparing',due:'2026-10-15',ext:true,who:'Ashok Sudeep',href:'engagement-overview.html'},
+      {form:'1041',name:'John E Smith Estate',note:'FY Aug',year:2025,status:'Letter unsigned',due:'2026-12-15',who:'Ashok Sudeep'},
+      {form:'709',name:'John E Smith',note:'Gift tax',year:2025,status:'Ready to deliver',due:'2026-10-15',ext:true,who:'Rita K.'},
+      {form:'1065',name:'Smith Family LP',year:2025,status:'Gathering docs',due:'2026-09-15',ext:true,who:'Rita K.'},
+      {form:'990-PF',name:'Smith Family Foundation',year:2025,status:'Filed',due:'2026-05-15',who:'Sam M.'},
+      {form:'1040',name:'Lily Smith',note:'Dependent',year:2025,status:'Gathering docs',due:'2026-10-15',ext:true,who:'Rita K.'}]},
+    {id:'morgan',name:'Morgan Family Office',type:'Family office',contact:'Claire Morgan',email:'claire.morgan@morganfamilyoffice.com',
+     conn:{s:'accepted',label:'Accepted',sub:'Since 2016'},team:'Rita K.',unread:0,activity:'1 d ago',
+     eng:[
+      {form:'990-PF',name:'Morgan Foundation',year:2025,status:'Preparing',due:'2026-11-16',ext:true,who:'Rita K.'},
+      {form:'1120',name:'Morgan Holdings Inc',note:'FY Aug',year:2025,status:'In review',due:'2026-12-15',who:'Rita K.'},
+      {form:'1065',name:'Morgan Ventures LP',year:2025,status:'Filed',due:'2026-09-15',ext:true,who:'Sam M.'},
+      {form:'1041',name:'Morgan Family Trust',year:2025,status:'Filed',due:'2026-09-30',ext:true,who:'Rita K.'},
+      {form:'1040',name:'Claire & David Morgan',note:'MFJ',year:2025,status:'Filed',due:'2026-10-15',ext:true,who:'Rita K.'},
+      {form:'709',name:'Claire Morgan',note:'Gift tax',year:2025,status:'Filed',due:'2026-04-15',who:'Rita K.'},
+      {form:'1040',name:'James Morgan',year:2025,status:'Filed',due:'2026-04-15',who:'Sam M.'},
+      {form:'1040',name:'Claire & David Morgan',note:'Planning',year:2026,status:'Not started',due:'2027-04-15',who:'Rita K.'}]},
+    {id:'jms',name:'John M Smith',type:'Business owner',contact:'John M Smith',email:'myfirm.client+1004@gmail.com',
+     conn:{s:'invited',label:'Invited',sub:'6 d ago',action:'Resend invite'},team:'Sam M.',unread:0,activity:'2 d ago',
+     eng:[
+      {form:'1065',name:'Smith & Rowe Partners',year:2026,status:'Not started',due:'2027-03-15',who:'Sam M.'},
+      {form:'1040',name:'John M Smith',year:2025,status:'Filed',due:'2026-04-15',who:'Sam M.'}]},
+    {id:'rivera',name:'Rivera Dental Group',type:'Business',contact:'Ana Rivera',email:'ana.rivera@riveradental.example',
+     conn:{s:'accepted',label:'Accepted',sub:'Since 2020'},team:'Ashok Sudeep',unread:1,activity:'3 d ago',
+     eng:[
+      {form:'1099-NEC',name:'Rivera Dental PC',note:'Contractor 1099s',year:2026,status:'Gathering docs',due:'2027-02-01',who:'Sam M.'},
+      {form:'1120-S',name:'Rivera Dental PC',year:2025,status:'Filed',due:'2026-09-15',ext:true,who:'Ashok Sudeep'},
+      {form:'1040',name:'Ana & Luis Rivera',note:'MFJ',year:2025,status:'Filed',due:'2026-10-15',ext:true,who:'Ashok Sudeep'}]},
+    {id:'patel',name:'Patel Household',type:'Individual',contact:'Ravi Patel',email:'ravi.patel@example.com',
+     conn:{s:'none',label:'Not invited',sub:'',action:'Send invite'},team:'Rita K.',unread:0,activity:'7 d ago',
+     eng:[
+      {form:'1040',name:'Ravi & Priya Patel',note:'MFJ',year:2025,status:'Gathering docs',due:'2026-10-15',ext:true,who:'Rita K.'}]}
+  ];
+  var DONE={'Filed':1};
+  var FORM_CLR={'1040':'#0B1220','1041':'#9A3412','1065':'#1F6A2E','1120':'#5B21B6','1120-S':'#6D28D9','709':'#0E7490','990-PF':'#1D4ED8','1099-NEC':'#475569'};
+  var ST_CLR={'Not started':'#94A3B8','Letter unsigned':'#D97706','Gathering docs':'#D97706','Preparing':'#2563EB','In review':'#7C3AED','Ready to deliver':'#16A34A','Filed':'#16A34A'};
+  // Fixed demo "today" so due-date math matches the rest of the prototype (letter viewed Oct 10, reminder in 2 days).
+  var TODAY=new Date('2026-10-12T00:00:00');
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function days(d){var x=new Date(d+'T00:00:00');return Math.round((x-TODAY)/864e5);}
+  function fmt(d,withYear){var x=new Date(d+'T00:00:00');return x.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(withYear||x.getFullYear()!==TODAY.getFullYear()?', '+x.getFullYear():'');}
+  function rel(e){
+    if(DONE[e.status])return {t:'Filed',c:'ok'};
+    var n=days(e.due);
+    if(n<0)return {t:(-n)+' d overdue',c:'bad'};
+    if(n===0)return {t:'Due today',c:'bad'};
+    return {t:'in '+n+' d',c:n<=30?'soon':'later'};
+  }
+  function nextDue(c){
+    var open=c.eng.filter(function(e){return !DONE[e.status];});
+    if(!open.length)return null;
+    return open.slice().sort(function(a,b){return a.due<b.due?-1:1;})[0];
+  }
+  var S={open:{smith:true}};
+
+  function matchEng(e){
+    var f=$('fForm').value,st=$('fStatus').value,y=$('fYear').value,d=$('fDue').value;
+    if(f&&e.form!==f)return false;
+    if(st==='open'&&DONE[e.status])return false;
+    if(st&&st!=='open'&&e.status!==st)return false;
+    if(y&&String(e.year)!==y)return false;
+    if(d){if(DONE[e.status])return false;var n=days(e.due);if(d==='over'&&n>=0)return false;if((d==='30'||d==='90')&&(n<0||n>+d))return false;}
+    return true;
+  }
+  function engFiltersOn(){return !!($('fForm').value||$('fStatus').value||$('fYear').value||$('fDue').value);}
+
+  function render(){
+    var q=$('q').value.trim().toLowerCase(),t=$('fType').value,tm=$('fTeam').value,cn=$('fConn').value,un=$('fUnread').checked;
+    var html='',shownC=0,shownE=0,totalE=0,over=0,soon=0;
+    CLIENTS.forEach(function(c){
+      c.eng.forEach(function(e){if(!DONE[e.status]){var n=days(e.due);if(n<0)over++;else if(n<=30)soon++;}});
+      totalE+=c.eng.length;
+      if(t&&c.type!==t)return;
+      if(cn&&c.conn.s!==cn)return;
+      if(un&&!c.unread)return;
+      if(tm&&c.team!==tm&&!c.eng.some(function(e){return e.who===tm;}))return;
+      var hay=(c.name+' '+c.contact+' '+c.email+' '+c.eng.map(function(e){return e.name+' '+e.form;}).join(' ')).toLowerCase();
+      if(q&&hay.indexOf(q)<0)return;
+      var list=c.eng.filter(function(e){return matchEng(e)&&(!tm||c.team===tm||e.who===tm);});
+      if(engFiltersOn()&&!list.length)return;
+      if(!engFiltersOn()&&!tm)list=c.eng;
+      shownC++;shownE+=list.length;
+      var open=!!S.open[c.id]||(engFiltersOn()&&S.open[c.id]!==false);
+      var years=Array.from(new Set(c.eng.map(function(e){return e.year;}))).sort().join(' · ');
+      var nd=nextDue(c),ndh='<span class="mute">Nothing open</span>';
+      if(nd){var r=rel(nd);ndh='<b>'+fmt(nd.due)+'</b><small>'+esc(nd.form+' · '+nd.name)+'</small><small class="r '+r.c+'">'+r.t+'</small>';}
+      var cnh='<span class="conn '+c.conn.s+'">'+(c.conn.s==='accepted'?'✓ ':'')+esc(c.conn.label)+'</span>'+(c.conn.sub?'<small>'+esc(c.conn.sub)+'</small>':'')+(c.conn.action?'<a href="#" class="lnk" onclick="return false">'+esc(c.conn.action)+'</a>':'');
+      var ini=c.name.split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      html+='<div class="cgrp'+(open?' is-open':'')+(c.isNew?' is-new':'')+'" data-id="'+c.id+'">'+
+        '<div class="cl-row main" role="row">'+
+          '<button class="exp" aria-expanded="'+open+'" aria-label="'+(open?'Collapse ':'Expand ')+esc(c.name)+'"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>'+
+          '<div class="who"><span class="av">'+ini+'</span><span class="wt"><a href="'+(c.href||'#')+'" class="nm">'+esc(c.name)+'</a><small>'+esc(c.contact)+' · '+esc(c.email)+'</small><span class="ctype">'+esc(c.type)+'</span></span></div>'+
+          '<div class="cell">'+cnh+'</div>'+
+          '<div class="cell">'+(c.eng.length?'<b>'+c.eng.length+' engagement'+(c.eng.length!==1?'s':'')+'</b><small>'+years+'</small>':'<span class="mute">None yet</span>')+'</div>'+
+          '<div class="cell">'+ndh+'</div>'+
+          '<div class="cell"><span>'+esc(c.team.split(' ')[0])+' leads</span></div>'+
+          '<div class="cell c">'+(c.unread?'<span class="unread">'+c.unread+'</span>':'<span class="mute">—</span>')+'</div>'+
+          '<div class="cell"><span class="mute">'+esc(c.activity)+'</span></div>'+
+        '</div>';
+      if(open){
+        html+='<div class="subs">';
+        list.slice().sort(function(a,b){return (DONE[a.status]?1:0)-(DONE[b.status]?1:0)||(a.due<b.due?-1:1);}).forEach(function(e){
+          var r=rel(e);
+          html+='<div class="cl-row sub'+(DONE[e.status]?' done':'')+'" role="row"><span></span>'+
+            '<div class="who"><span class="fm" style="background:'+(FORM_CLR[e.form]||'#334155')+'">'+e.form+'</span><span class="wt"><a href="'+(e.href||'#')+'" class="nm">'+esc(e.name)+'</a>'+(e.note?'<small>'+esc(e.note)+'</small>':'')+'</span></div>'+
+            '<div class="cell"><span class="st"><i style="background:'+(ST_CLR[e.status]||'#94A3B8')+'"></i>'+esc(e.status)+'</span></div>'+
+            '<div class="cell"><span>TY '+e.year+'</span></div>'+
+            '<div class="cell">'+(DONE[e.status]?'<span class="mute">—</span>':'<span class="r '+r.c+'">'+r.t+'</span><small>'+fmt(e.due)+(e.ext?' · extended':'')+'</small>')+'</div>'+
+            '<div class="cell"><span>'+esc(e.who)+'</span></div>'+
+            '<div class="cell c"></div>'+
+            '<div class="cell"><a class="openbtn" href="'+(e.href||'#')+'">Open</a></div></div>';
+        });
+        html+='<div class="sub-add"><button class="addeng">+ Add engagement</button></div></div>';
+      }
+      html+='</div>';
+    });
+    $('rows').innerHTML=html||'<div class="empty-st"><b>No clients match these filters</b><button class="lnk" id="clear2">Clear filters</button></div>';
+    $('showing').textContent='Showing '+shownC+' of '+CLIENTS.length+' clients · '+shownE+' of '+totalE+' engagements';
+    $('kpiClients').textContent=CLIENTS.length;$('kpiEng').textContent=totalE;
+    $('kpiOver').querySelector('b').textContent=over;$('kpiOver').classList.toggle('on',over>0);
+    $('kpiSoon').textContent=soon;
+    var anyOpen=CLIENTS.some(function(c){return S.open[c.id];});
+    var ta=$('toggleAll');ta.title=anyOpen?'Collapse all':'Expand all';ta.setAttribute('aria-label',ta.title);
+    renderChips();
+  }
+
+  var LABELS={q:'Search',fType:'Type',fForm:'Form',fTeam:'Assigned',fStatus:'Status',fConn:'Portal',fDue:'Due',fYear:'Tax year',fUnread:'Unread'};
+  function renderChips(){
+    var out=[],more=0;
+    ['q','fType','fForm','fTeam','fStatus','fConn','fDue','fYear','fUnread'].forEach(function(id){
+      var el=$(id),v=el.type==='checkbox'?el.checked:el.value;if(!v)return;
+      if(['fStatus','fConn','fDue','fYear','fUnread'].indexOf(id)>=0)more++;
+      var txt=el.tagName==='SELECT'?el.options[el.selectedIndex].text:el.type==='checkbox'?'Has unread':'“'+v+'”';
+      out.push('<span class="chip">'+LABELS[id]+': '+esc(txt)+'<button data-clear="'+id+'" aria-label="Remove filter">×</button></span>');
+    });
+    $('chips').innerHTML=out.length?out.join('')+'<button class="lnk" id="clearAll">Clear all</button>':'';
+    $('chips').hidden=!out.length;
+    $('moreN').hidden=!more;$('moreN').textContent=more;
+  }
+  function clearOne(id){var el=$(id);if(el.type==='checkbox')el.checked=false;else el.value='';}
+  function clearAll(){Object.keys(LABELS).forEach(clearOne);render();}
+
+  document.addEventListener('input',function(e){if(e.target.closest('.cl-bar,.cl-more'))render();});
+  document.addEventListener('change',function(e){if(e.target.closest('.cl-bar,.cl-more'))render();});
+  $('chips').addEventListener('click',function(e){var b=e.target.closest('[data-clear]');if(b){clearOne(b.dataset.clear);render();}if(e.target.id==='clearAll')clearAll();});
+  $('rows').addEventListener('click',function(e){
+    if(e.target.id==='clear2'){clearAll();return;}
+    if(e.target.closest('a,.addeng'))return;
+    var row=e.target.closest('.cl-row.main');if(!row)return;
+    var id=row.parentNode.dataset.id;S.open[id]=!row.parentNode.classList.contains('is-open');render();
+  });
+  $('toggleAll').onclick=function(){var anyOpen=CLIENTS.some(function(c){return S.open[c.id];});CLIENTS.forEach(function(c){S.open[c.id]=!anyOpen;});render();};
+  $('moreBtn').onclick=function(){var p=$('morePanel'),o=p.hidden;p.hidden=!o;this.setAttribute('aria-expanded',o);};
+
+  /* ---------- Add Client → Add client dialog (mirrors ui_screens AddClientDialog) ---------- */
+  // Open/close, Esc, backdrop, focus trap and toast come from the shared Acurat.dialog / Acurat.toast (assets/acurat.js).
+  // acurat.js loads after this script, so the dialog is created on first open.
+  var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/, touched=false, addDlg=null;
+  var F={name:$('acName'),email:$('acEmail'),phone:$('acPhone')};
+  function errs(){return {name:F.name.value.trim()?'':'Enter a client name',email:EMAIL_RE.test(F.email.value.trim())?'':'Enter a valid email'};}
+  function showErrs(){
+    var e=errs();
+    ['name','email'].forEach(function(k){
+      var wrap=document.querySelector('[data-f="'+k+'"]'),m=wrap.querySelector('.ferr'),on=touched&&!!e[k];
+      wrap.classList.toggle('err',on);F[k].setAttribute('aria-invalid',on?'true':'false');
+      m.hidden=!on;m.textContent=on?e[k]:'';
+      on?F[k].setAttribute('aria-describedby',m.id):F[k].removeAttribute('aria-describedby');
+    });
+    return !e.name&&!e.email;
+  }
+  function dlgApi(){
+    if(!addDlg)addDlg=window.Acurat.dialog($('addDlg'),{onOpen:function(){touched=false;F.name.value=F.email.value=F.phone.value='';showErrs();}});
+    return addDlg;
+  }
+  $('newClient').onclick=function(){dlgApi().open();};
+  ['name','email'].forEach(function(k){F[k].addEventListener('input',function(){if(touched)showErrs();});});
+  $('addForm').addEventListener('submit',function(e){
+    e.preventDefault();touched=true;
+    if(!showErrs()){(errs().name?F.name:F.email).focus();return;}
+    var name=F.name.value.trim();
+    // Same shape ui_screens clientStore.add() creates: empty client, contact = the client itself, partner AS.
+    CLIENTS.unshift({id:'c-new-'+Date.now(),isNew:true,name:name,type:'Family office',contact:name,
+      email:F.email.value.trim().toLowerCase(),phone:F.phone.value.trim(),
+      conn:{s:'none',label:'Not invited',sub:'',action:'Send invite'},team:'Ashok Sudeep',unread:0,activity:'Just now',eng:[]});
+    dlgApi().close();clearAll();
+    window.Acurat.toast('Client created: '+name);
+  });
+
+  render();
+})();
+</script>
+
+  </main>
+</div>
+<script src="assets/acurat.js"></script>
+</body>
+</html>

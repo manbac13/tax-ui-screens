@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acurat — Questionnaire editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+<style>
+/* Questionnaire editor (ui_screens pages/settings/templates/QuestionnaireEditor) */
+.qe-grid{display:grid;grid-template-columns:minmax(0,8.5fr) minmax(260px,3.5fr);gap:20px;align-items:start}
+@media (max-width:1100px){.qe-grid{grid-template-columns:1fr}}
+.qe-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.eyebrow{margin:0;font-size:12px;line-height:16px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#64748B}
+.qe-card .eyebrow{margin-bottom:4px}
+.qe-set{display:grid;grid-template-columns:5fr 7fr;gap:16px}
+.qe-set .full{grid-column:1/-1}
+@media (max-width:760px){.qe-set{grid-template-columns:1fr}}
+.qe-pt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:#111827}
+/* engagement-type toggle chips */
+.tchips{display:flex;flex-wrap:wrap;gap:6px}
+.tchip{height:28px;padding:0 10px;border:1px solid #E5E7EB;border-radius:999px;background:#fff;font:600 12px/16px Inter,system-ui,sans-serif;color:#334155;font-variant-numeric:tabular-nums;cursor:pointer;transition:background .12s,border-color .12s}
+.tchip:hover{border-color:#94A3B8}
+.tchip[aria-pressed="true"]{background:#E3F1E5;border-color:#1F6A2E;color:#1F6A2E}
+.tchip:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+/* question cards */
+.qcard{background:#fff;border:1px solid #E5E7EB;border-radius:12px;transition:border-color .15s,box-shadow .15s}
+.qcard:not(.is-open):hover{border-color:#CBD5E1}
+.qcard.is-open{border-color:#2F7D3B;box-shadow:0 0 0 1px #2F7D3B}
+.qcard.drag{opacity:.5}
+.qcard.over-top{box-shadow:0 -3px 0 #2F7D3B}
+.qcard.over-bot{box-shadow:0 3px 0 #2F7D3B}
+.qhead{display:flex;align-items:center;gap:12px;padding:14px 20px}
+.qhead[role=button]{cursor:pointer}
+.qhead[role=button]:focus-visible{outline:2px solid #2F7D3B;outline-offset:-2px;border-radius:12px}
+.qhandle{flex:none;display:flex;color:#94A3B8;cursor:grab}
+.qhandle:active{cursor:grabbing}
+.qtxt{flex:1;min-width:0;font-size:14px;line-height:20px;font-weight:600;color:#111827}
+.qtxt .qn{margin-right:8px;color:#64748B}
+.spill{display:inline-flex;align-items:center;height:24px;box-sizing:border-box;padding:0 8px;border-radius:6px;font-size:13px;line-height:16px;font-weight:500;white-space:nowrap}
+.spill.drf{border:1px solid #E2E8F0;background:#F8FAFC;color:#334155;font-weight:400}
+.spill.rule{border:1px solid #E3E1FB;background:#F7F6FE;color:#4338CA}
+.qbody{display:flex;flex-direction:column;gap:16px;padding:0 20px 20px}
+.qgrid{display:grid;grid-template-columns:6fr 3fr 3fr;gap:16px}
+@media (max-width:760px){.qgrid{grid-template-columns:1fr}}
+.qrule{padding:16px;border:1px solid #E5E7EB;border-radius:12px;background:#F8FAFC}
+.qrule h3{margin:0 0 12px;font-size:14px;line-height:20px;font-weight:600;color:#111827}
+.rgrid{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center}
+.rgrid>span{font-size:14px;line-height:20px;color:#111827}
+@media (max-width:640px){.rgrid{grid-template-columns:1fr}}
+.rgrid .acs{min-width:0}
+.rchips{display:flex;flex-wrap:wrap;gap:6px}
+.rchip{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 4px 0 10px;border-radius:999px;background:#E3F1E5;font-size:13px;line-height:16px;font-weight:600;color:#1F6A2E}
+.rchip button{width:20px;height:20px;padding:0;border:0;border-radius:50%;background:transparent;color:#1F6A2E;font-size:15px;line-height:1;cursor:pointer}
+.rchip button:hover{background:rgba(31,106,46,.12)}
+.rchip.add{padding:0 12px;border:1px dashed #CBD5E1;background:#fff;color:#334155;font-weight:500;cursor:pointer}
+.rchip.add:hover{border-color:#2F7D3B;color:#1F6A2E}
+.rchip.add[aria-expanded="true"]{border-color:#2F7D3B;color:#1F6A2E}
+/* side panels */
+.qkv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #F0F1F3;font-size:14px;line-height:20px}
+.qkv:last-child{border-bottom:0}
+.qkv span{color:#64748B}
+.qkv b{font-weight:600;color:#111827;font-variant-numeric:tabular-nums}
+.qv{margin:0;font-size:14px;line-height:20px;color:#111827}
+.qv.mut{color:#64748B}
+.qv b{font-weight:600}
+.qcap{font-size:12px;line-height:16px;color:#64748B}
+</style>
+</head>
+<body data-ctx="list">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");})();</script>
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="index.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group"><div class="sec">Platform</div>
+      <a href="index.html" title="Clients"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg><span class="lbl">Clients</span></a>
+      <a href="engagements.html" title="Engagements"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg><span class="lbl">Engagements</span></a>
+      <a href="#" title="Review"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span class="lbl">Review</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="admin.html" aria-current="page" title="Administration"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Administration</span></a>
+      <a href="docs.html" title="Documentation"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg><span class="lbl">Documentation</span></a>
+      <a href="help.html" title="Help &amp; Support"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span class="lbl">Help &amp; Support</span></a>
+      <div class="me" title="demo@acurat.com"><div class="av" aria-hidden="true">D</div><div class="who lbl"><b>demo@acurat.com</b><span>ACCOUNT</span></div></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; background: #F8FAFC; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 20px;">
+    <!-- Breadcrumb + title + actions (ui_screens QuestionnaireEditor) -->
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="admin.html?tab=templates">Templates</a><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg><a href="admin.html?tab=templates">Questionnaires</a><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg><span aria-current="page" id="crumbName" style="color:#111827"></span></nav>
+      <div class="list-head" style="align-items:center">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0"><h1 id="qeTitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></h1><span class="spill drf" id="qeVer"></span></div>
+        <div class="lh-r"><button type="button" class="mf" id="qeSave">Save draft</button><button type="button" class="add" id="qePublish">Publish</button></div>
+      </div>
+    </div>
+
+    <div class="qe-grid">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <!-- Settings -->
+        <section class="qe-card" aria-labelledby="setT">
+          <h2 class="eyebrow" id="setT">Settings</h2>
+          <div class="qe-set">
+            <div class="dfld"><label for="qeName">Template name</label><input id="qeName" autocomplete="off"></div>
+            <div class="dfld"><label id="usedL">Used for engagement types</label><div class="tchips" role="group" aria-labelledby="usedL" id="qeUsed"></div></div>
+            <div class="dfld full"><label for="qeIntro">Intro shown to the client <small>(optional)</small></label><input id="qeIntro" placeholder="Shown above the first question" autocomplete="off"></div>
+          </div>
+        </section>
+
+        <h2 class="eyebrow" style="margin:4px 0 0">Questions · Income and life changes</h2>
+        <div id="qList" style="display:flex;flex-direction:column;gap:12px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="mf" id="qAdd"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add question</button>
+          <button type="button" class="mf" id="qSection"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add section</button>
+        </div>
+      </div>
+
+      <!-- Side panels -->
+      <aside style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <section class="qe-card"><h2 class="qe-pt">Summary</h2><div id="qeSummary"></div></section>
+        <section class="qe-card"><h2 class="qe-pt">Versions</h2><div id="qeVersions" style="display:flex;flex-direction:column;gap:6px"></div></section>
+        <section class="qe-card"><h2 class="qe-pt">Request library</h2>
+          <p style="margin:0;font-size:14px;line-height:20px;color:#64748B">Rules pick from the same document requests used in request list templates, so a request is defined once and reused.</p>
+          <div><button type="button" class="dbtn sec" id="qeLib" style="height:32px;padding:0 12px">Open request library</button></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script src="assets/acurat.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  /* ---------- Data (ui_screens data/engagements.js) ---------- */
+  var TYPES=['1040','1040-SR','1040-NR','1065','1120-S','1120','1041','990','990-EZ','990-PF','706','709','941','940','720','1042'];
+  var TEMPLATES=[
+    {id:'qt-1',name:'2025 Individual tax organizer',description:'Income, life changes, deductions',usedFor:['1040'],usedIn:38},
+    {id:'qt-2',name:'New client intake',description:'Contact, filing history, prior CPA',usedFor:['All types'],usedIn:21},
+    {id:'qt-3',name:'Business owner questionnaire',description:'Entities, ownership, payroll',usedFor:['1065','1120-S','1120'],usedIn:9},
+    {id:'qt-4',name:'Estate and trust questions',description:'Beneficiaries, distributions',usedFor:['1041'],usedIn:0},
+    {id:'qt-5',name:'Payroll tax intake',description:'Employees, payroll provider, deposits',usedFor:['941','940'],usedIn:3}];
+  var EDITOR_QUESTIONS=[
+    {id:1,text:'Did you change jobs or have more than one employer in 2025?',requests:['W-2 for each employer'],details:'Off'},
+    {id:2,text:'Did you start a business or have self-employment income?',requests:['Business income and expenses summary','1099-NEC forms'],details:'Optional when Yes'},
+    {id:3,text:'Did you buy, sell or rent out any property?',requests:['Rental income and expenses summary','Property tax bill','Closing statement'],details:'Optional when Yes'},
+    {id:4,text:'Did you have a baby or any change in dependents?',requests:['Birth certificate or SSN card'],details:'Required when Yes'}];
+  var LIBRARY=['Rental income and expenses summary','Property tax bill','Closing statement','W-2 for each employer','Form 1098','Charitable donation receipts','Childcare provider details','Birth certificate or SSN card'];
+
+  /* ---------- Load: ?id=qt-1 | new (edits saved earlier come from localStorage) ---------- */
+  var SAVED={};try{SAVED=JSON.parse(localStorage.getItem('acurat.qt'))||{};}catch(e){}
+  var id=new URLSearchParams(location.search).get('id')||'qt-1', isNew=id==='new';
+  var base=TEMPLATES.filter(function(t){return t.id===id;})[0]||SAVED[id]||TEMPLATES[0];
+  if(!isNew)id=base.id;
+  var saved=isNew?null:SAVED[id];
+  var S={
+    name:isNew?'Untitled questionnaire':(saved&&saved.name)||base.name,
+    usedFor:isNew?[]:((saved&&saved.usedFor)||base.usedFor).slice(),
+    intro:isNew?'':(saved&&saved.intro!=null?saved.intro:'A few quick questions so we can prepare your return accurately.'),
+    questions:JSON.parse(JSON.stringify(isNew?[]:(saved&&saved.qs)||EDITOR_QUESTIONS)),
+    selected:isNew?null:3,
+    rule:{}, approval:{}};
+  // ui_screens shows the full template's totals (the editor only lists one section)
+  var EXTRA=isNew||(saved&&saved.isNewTemplate)?{q:0,r:0,p:0}:{q:18,r:10,p:19};
+  var usedIn=isNew?0:(base.usedIn||0);
+
+  /* ---------- Header + settings ---------- */
+  function renderHead(){
+    var n=S.name.trim()||'Untitled questionnaire';
+    $('qeTitle').textContent=n;$('crumbName').textContent=n;document.title='Acurat — '+n;
+    $('qeVer').textContent=isNew?'Draft v1':'Draft v3';
+  }
+  $('qeName').value=S.name;$('qeIntro').value=S.intro;
+  $('qeName').addEventListener('input',function(){S.name=this.value;renderHead();});
+  $('qeIntro').addEventListener('input',function(){S.intro=this.value;});
+  function renderUsed(){
+    $('qeUsed').innerHTML=TYPES.map(function(c){var on=S.usedFor.indexOf(c)>=0;return '<button type="button" class="tchip" aria-pressed="'+on+'" data-code="'+c+'">'+c+'</button>';}).join('');
+  }
+  $('qeUsed').addEventListener('click',function(e){
+    var b=e.target.closest('.tchip');if(!b)return;var c=b.dataset.code,i=S.usedFor.indexOf(c);
+    if(i>=0)S.usedFor.splice(i,1);else S.usedFor.push(c);
+    b.setAttribute('aria-pressed',i<0?'true':'false');
+  });
+
+  /* ---------- Question cards ---------- */
+  var HANDLE='<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>';
+  var ruleLabel=function(q){return q.requests.length?'Yes → '+q.requests.length+' request'+(q.requests.length===1?'':'s'):'';};
+  function card(q,i){
+    var sel=q.id===S.selected;
+    var h='<article class="qcard'+(sel?' is-open':'')+'" data-id="'+q.id+'">'+
+      '<div class="qhead"'+(sel?'':' role="button" tabindex="0" aria-expanded="false" aria-label="Edit question '+(i+1)+'"')+'>'+
+        '<span class="qhandle" draggable="true" title="Drag to reorder" aria-label="Drag to reorder">'+HANDLE+'</span>'+
+        '<span class="qtxt"><span class="qn">'+(i+1)+'.</span>'+esc(q.text||'Untitled question')+'</span>'+
+        '<span class="spill drf">Yes / No</span>'+(q.requests.length?'<span class="spill rule">'+ruleLabel(q)+'</span>':'')+
+      '</div>';
+    if(sel){
+      h+='<div class="qbody">'+
+        '<div class="qgrid">'+
+          '<div class="dfld'+(q.text.trim()?'':' err')+'"><label for="qt-'+q.id+'">Question</label><input id="qt-'+q.id+'" data-k="text" value="'+esc(q.text)+'" autocomplete="off"></div>'+
+          '<div class="dfld"><label for="qa-'+q.id+'">Answer type</label><select id="qa-'+q.id+'"><option value="yesno">Yes / No</option><option value="text" disabled>Text (later)</option><option value="choice" disabled>Multiple choice (later)</option></select></div>'+
+          '<div class="dfld"><label for="qd-'+q.id+'">Details box</label><select id="qd-'+q.id+'" data-k="details">'+['Off','Optional when Yes','Required when Yes'].map(function(o){return '<option'+(q.details===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
+        '</div>'+
+        '<div class="qrule"><h3>Rule</h3><div class="rgrid">'+
+          '<span>If the answer is</span><div><select data-k="ruleAns" aria-label="If the answer is" style="min-width:140px"><option value="yes"'+(S.rule[q.id]==='no'?'':' selected')+'>Yes</option><option value="no"'+(S.rule[q.id]==='no'?' selected':'')+'>No</option></select></div>'+
+          '<span>Add requests</span><div class="rchips">'+q.requests.map(function(r){return '<span class="rchip">'+esc(r)+'<button type="button" data-rm="'+esc(r)+'" aria-label="Remove '+esc(r)+'">×</button></span>';}).join('')+
+            '<button type="button" class="rchip add" data-lib>+ Add from request library</button></div>'+
+          '<span>Approval</span><div><select data-k="approval" aria-label="Approval" style="min-width:220px"><option value="ask"'+(S.approval[q.id]==='auto'?'':' selected')+'>Ask me before sending</option><option value="auto"'+(S.approval[q.id]==='auto'?' selected':'')+'>Automatic</option></select></div>'+
+        '</div><p class="qcap" style="margin:12px 0 0">The client sees why each request was added. Requests are not added twice if one already exists on the engagement.</p></div>'+
+        '<div style="display:flex;justify-content:space-between;gap:8px"><button type="button" class="dbtn sec" data-act="delete" style="height:32px">Delete question</button><button type="button" class="dbtn sec" data-act="duplicate" style="height:32px">Duplicate</button></div>'+
+      '</div>';
+    }
+    return h+'</article>';
+  }
+  function renderQs(focusText){
+    $('qList').innerHTML=S.questions.length?S.questions.map(card).join(''):'<p style="margin:0;font-size:14px;line-height:20px;color:#64748B">No questions yet. Add the first one.</p>';
+    Acurat.enhanceSelects($('qList'));
+    var sel=$('qList').querySelector('.qcard.is-open');
+    if(sel){
+      var inp=sel.querySelector('input[data-k=text]');
+      inp.addEventListener('input',function(){var q=findQ();q.text=this.value;this.closest('.dfld').classList.toggle('err',!q.text.trim());sel.querySelector('.qtxt').innerHTML='<span class="qn">'+(S.questions.indexOf(q)+1)+'.</span>'+esc(q.text||'Untitled question');});
+      if(focusText)setTimeout(function(){inp.focus();},0);
+    }
+    renderSummary();
+  }
+  var findQ=function(qid){qid=qid==null?S.selected:qid;return S.questions.filter(function(q){return q.id===qid;})[0];};
+  $('qList').addEventListener('click',function(e){
+    var c=e.target.closest('.qcard');if(!c)return;var qid=+c.dataset.id,q=findQ(qid);
+    if(!c.classList.contains('is-open')){if(!e.target.closest('.qhandle')){S.selected=qid;renderQs();c=$('qList').querySelector('.qcard.is-open');if(c)c.scrollIntoView&&c.scrollIntoView({block:'nearest'});}return;}
+    var rm=e.target.closest('[data-rm]');if(rm){q.requests.splice(q.requests.indexOf(rm.dataset.rm),1);renderQs();return;}
+    var lib=e.target.closest('[data-lib]');
+    if(lib){var left=LIBRARY.filter(function(r){return q.requests.indexOf(r)<0;});
+      Acurat.menu(lib,left.length?left.map(function(r){return {label:r,onClick:function(){q.requests.push(r);renderQs();}};}):[{label:'Everything in the library is already added',onClick:function(){}}]);return;}
+    var act=e.target.closest('[data-act]');
+    if(act&&act.dataset.act==='delete'){var i=S.questions.indexOf(q);S.questions.splice(i,1);S.selected=null;renderQs();Acurat.toast('Question deleted','info');return;}
+    if(act&&act.dataset.act==='duplicate'){var copy=JSON.parse(JSON.stringify(q));copy.id=Date.now();S.questions.splice(S.questions.indexOf(q)+1,0,copy);S.selected=copy.id;renderQs(true);return;}
+  });
+  $('qList').addEventListener('keydown',function(e){var h=e.target.closest('.qhead[role=button]');if(h&&(e.key==='Enter'||e.key===' ')){e.preventDefault();S.selected=+h.closest('.qcard').dataset.id;renderQs(true);}});
+  $('qList').addEventListener('change',function(e){
+    var k=e.target.getAttribute('data-k'),q=findQ();if(!q||!k)return;
+    if(k==='details')q.details=e.target.value;
+    if(k==='ruleAns')S.rule[q.id]=e.target.value;
+    if(k==='approval')S.approval[q.id]=e.target.value;
+  });
+  // Drag the handle to reorder questions
+  var dragId=null;
+  $('qList').addEventListener('dragstart',function(e){var h=e.target.closest('.qhandle');if(!h)return;dragId=+h.closest('.qcard').dataset.id;h.closest('.qcard').classList.add('drag');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(dragId));}catch(err){}});
+  $('qList').addEventListener('dragover',function(e){if(dragId==null)return;var c=e.target.closest('.qcard');if(!c)return;e.preventDefault();
+    $('qList').querySelectorAll('.qcard').forEach(function(x){x.classList.remove('over-top','over-bot');});
+    var r=c.getBoundingClientRect();c.classList.add(e.clientY<r.top+r.height/2?'over-top':'over-bot');});
+  $('qList').addEventListener('drop',function(e){if(dragId==null)return;e.preventDefault();var c=e.target.closest('.qcard');if(!c)return;
+    var to=+c.dataset.id;if(to!==dragId){var q=findQ(dragId);S.questions.splice(S.questions.indexOf(q),1);var r=c.getBoundingClientRect(),idx=S.questions.indexOf(findQ(to))+(e.clientY<r.top+r.height/2?0:1);S.questions.splice(idx,0,q);}
+    dragId=null;renderQs();});
+  $('qList').addEventListener('dragend',function(){dragId=null;$('qList').querySelectorAll('.qcard').forEach(function(x){x.classList.remove('drag','over-top','over-bot');});});
+
+  $('qAdd').onclick=function(){var nid=Date.now();S.questions.push({id:nid,text:'',requests:[],details:'Off'});S.selected=nid;renderQs(true);};
+  $('qSection').onclick=function(){Acurat.toast('Sections — coming soon','info');};
+  $('qeLib').onclick=function(){Acurat.toast('Request library — coming soon','info');};
+
+  /* ---------- Side panels ---------- */
+  function kv(l,v){return '<div class="qkv"><span>'+esc(l)+'</span><b>'+esc(v)+'</b></div>';}
+  function renderSummary(){
+    var rules=S.questions.filter(function(q){return q.requests.length;}).length,possible=S.questions.reduce(function(n,q){return n+q.requests.length;},0);
+    $('qeSummary').innerHTML=kv('Questions',EXTRA.q+S.questions.length)+kv('Rules',EXTRA.r+rules)+kv('Possible requests added',EXTRA.p+possible)+kv('Used in',usedIn+' engagements');
+  }
+  $('qeVersions').innerHTML=isNew?'<p class="qv"><b>v1</b> Draft, not published yet</p>'
+    :'<p class="qv"><b>v3</b> Draft, edited today</p><p class="qv mut"><b>v2</b> Published Oct 12 ('+usedIn+' engagements)</p><p class="qv mut"><b>v1</b> Archived</p><p class="qcap" style="margin:4px 0 0">Publishing v3 does not change questionnaires already sent.</p>';
+
+  /* ---------- Save draft / Publish (same checks as ui_screens) ---------- */
+  function persist(status){
+    var key=isNew?'qt-'+Date.now():id,rules=S.questions.filter(function(q){return q.requests.length;}).length;
+    var rec={id:key,name:S.name.trim()||'Untitled questionnaire',usedFor:S.usedFor.length?S.usedFor.slice():['All types'],intro:S.intro,qs:S.questions,
+      questions:EXTRA.q+S.questions.length,rules:EXTRA.r+rules,edited:'Just now · Ashok S.',status:status,usedIn:usedIn,
+      description:isNew?'Custom questionnaire':base.description,isNewTemplate:isNew||(saved&&saved.isNewTemplate)||false};
+    SAVED[key]=rec;try{localStorage.setItem('acurat.qt',JSON.stringify(SAVED));}catch(e){}
+    if(isNew){isNew=false;id=key;saved=rec;if(history.replaceState)history.replaceState(null,'','?id='+key);}
+  }
+  $('qeSave').onclick=function(){persist(saved&&saved.status==='Published'?'Published':'Draft');Acurat.toast('Draft saved');};
+  $('qePublish').onclick=function(){
+    if(!S.questions.length){Acurat.toast('Add at least one question before publishing.','error');return;}
+    var blank=S.questions.filter(function(q){return !q.text.trim();})[0];
+    if(blank){S.selected=blank.id;renderQs(true);Acurat.toast('Every question needs text before publishing.','error');return;}
+    persist('Published');Acurat.toast('Published v3. Questionnaires already sent keep their version.');
+  };
+
+  renderHead();renderUsed();renderQs();
+})();
+</script>
+</body>
+</html>

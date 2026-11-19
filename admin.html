@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acurat — Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.tbl-scroll{overflow-x:auto}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+<style>
+/* Administration: settings nav (left) + panel (right) — ui_screens pages/settings */
+.adm-row{flex:1;min-height:0;display:flex;gap:16px;align-items:stretch}
+@media (max-width:900px){.adm-row{flex-direction:column}.adm-nav{width:100%!important}}
+.adm-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.adm-nav{flex:none;width:232px}
+.adm-nav nav{flex:1;min-height:0;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:2px}
+.snav{box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;min-height:38px;padding:0 12px;border:0;border-radius:8px;background:transparent;font:400 14px/20px Inter,system-ui,sans-serif;color:#111827;text-align:left;text-decoration:none;cursor:pointer;transition:background .15s}
+.snav svg{flex:none;color:#64748B}
+.snav:hover{background:#F1F5F9;color:#111827}
+.snav[aria-current="page"],.snav.on{background:#E3F1E5;color:#1F6A2E;font-weight:600}
+.snav[aria-current="page"] svg,.snav.on svg{color:#1F6A2E}
+.snav:focus-visible{outline:2px solid #2F7D3B;outline-offset:-2px}
+.snav .chev{margin-left:auto;color:#94A3B8;transition:transform .18s}
+.snav[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.snav.sub{padding-left:38px;min-height:34px;font-size:13px}
+.snav.sub[hidden]{display:none}
+.adm-main{flex:1;min-width:0}
+.adm-scroll{flex:1;min-height:0;overflow-y:auto;padding:24px}
+/* Templates: underline tabs, same as .ws-tabs in the client / engagement headers */
+.adm-tabs{padding:0;margin:0 -24px;padding:0 12px;border-bottom:1px solid #E5E7EB}
+.adm-tabs a:focus-visible{outline:2px solid #2F7D3B;outline-offset:-2px;border-radius:6px}
+/* template tables (shared table look) */
+.ttbl{border:1px solid #E5E7EB;border-radius:12px;background:#fff;overflow:hidden}
+.trw{display:grid;align-items:center;gap:16px;padding:12px 20px;border-top:1px solid #F0F1F3}
+.trw.hd{height:44px;padding-top:0;padding-bottom:0;border-top:0;background:#E9EEF4;font-size:12px;line-height:16px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#4B5563}
+.trw.click{cursor:pointer;transition:background .15s}
+.trw.click:hover{background:#F8FAFC}
+.trw .nm{display:flex;flex-direction:column;min-width:0}
+.trw .nm b{font-size:14px;line-height:20px;font-weight:600;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trw .nm span{font-size:13px;line-height:20px;color:#64748B;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trw .num{font-size:14px;line-height:20px;color:#111827;font-variant-numeric:tabular-nums}
+.trw .mut{font-size:13px;line-height:20px;color:#64748B}
+.ftag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:6px;background:#F1F5F9;font-size:12px;line-height:16px;font-weight:600;color:#334155;white-space:nowrap}
+.spill{display:inline-flex;align-items:center;height:24px;box-sizing:border-box;padding:0 8px;border-radius:6px;font-size:13px;line-height:16px;font-weight:500;white-space:nowrap}
+.spill.pub{border:1px solid #BBF7D0;background:#F0FDF4;color:#15803D}
+.spill.drf{border:1px solid #E2E8F0;background:#F8FAFC;color:#334155;font-weight:400}
+.q-cols{grid-template-columns:minmax(180px,1.6fr) minmax(100px,1fr) 76px 52px 120px 92px 60px 32px;column-gap:12px}
+.l-cols{grid-template-columns:minmax(260px,1fr) 120px 72px}
+.tcap{margin:0;font-size:12px;line-height:16px;color:#64748B}
+.ltbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid #E5E7EB}
+.lfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid #E5E7EB;font-size:14px;color:#4B5563}
+</style>
+</head>
+<body data-ctx="list">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");})();</script>
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="index.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group"><div class="sec">Platform</div>
+      <a href="index.html" title="Clients"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg><span class="lbl">Clients</span></a>
+      <a href="engagements.html" title="Engagements"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg><span class="lbl">Engagements</span></a>
+      <a href="#" title="Review"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span class="lbl">Review</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="admin.html" aria-current="page" title="Administration"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Administration</span></a>
+      <a href="docs.html" title="Documentation"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg><span class="lbl">Documentation</span></a>
+      <a href="help.html" title="Help &amp; Support"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span class="lbl">Help &amp; Support</span></a>
+      <div class="me" title="demo@acurat.com"><div class="av" aria-hidden="true">D</div><div class="who lbl"><b>demo@acurat.com</b><span>ACCOUNT</span></div></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex: 999 1 560px; min-width: 0; height: 100vh; box-sizing: border-box; background: #F8FAFC; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 16px;">
+    <div class="list-head" style="align-items:center"><div class="lh-t"><h1>Administration</h1></div>
+      <div class="lh-r"><span id="wsName" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;line-height:16px;font-weight:500;color:#64748B"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><span></span></span></div></div>
+
+    <div class="adm-row">
+      <div class="adm-card adm-nav"><nav aria-label="Administration sections" id="snav"></nav></div>
+      <div class="adm-card adm-main"><div class="adm-scroll" id="panel"></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- Engagement letter: New / Edit template (ui_screens LetterTemplates TemplateDialog) -->
+<div class="dlg-back" id="ltDlg" hidden>
+  <div class="dlg lg" role="dialog" aria-modal="true" aria-labelledby="ltTitle" aria-describedby="ltSub">
+    <div class="dlg-h"><div><h2 id="ltTitle">New template</h2><p id="ltSub">Templates are reusable engagement-letter or email bodies.</p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <form id="ltForm" novalidate>
+      <div class="dlg-b one" style="gap:20px">
+        <div class="dfld" data-f="name"><label for="ltName">Name <i aria-hidden="true">*</i></label><input id="ltName" placeholder="e.g. Standard 1040 engagement" maxlength="160" autocomplete="off" autofocus><p class="ferr" id="ltName-err" hidden></p><p class="hint" id="ltName-hint">Shown in pickers and lists.</p></div>
+        <div class="dfld" data-f="desc"><label for="ltDesc">Description <i aria-hidden="true">*</i></label><textarea id="ltDesc" rows="2" maxlength="280" placeholder="Individual return engagement letter with scope, fees and e-sign request."></textarea><p class="ferr" id="ltDesc-err" hidden></p><p class="hint" id="ltDesc-hint">One short line that explains when to use this template.</p></div>
+        <div class="dfld" data-f="body">
+          <label id="ltBodyL">Body <i aria-hidden="true">*</i></label>
+          <div class="fchips" id="ltFields"><span>Insert field</span></div>
+          <div class="rte" id="ltRte">
+            <div class="rte-bar" role="toolbar" aria-label="Formatting">
+              <button type="button" data-cmd="bold" title="Bold" aria-label="Bold"><b>B</b></button>
+              <button type="button" data-cmd="italic" title="Italic" aria-label="Italic"><i style="font-family:Georgia,serif">I</i></button>
+              <button type="button" data-cmd="underline" title="Underline" aria-label="Underline"><u>U</u></button>
+              <i aria-hidden="true"></i>
+              <button type="button" data-cmd="insertOrderedList" title="Numbered list" aria-label="Numbered list"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10h2M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+              <button type="button" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg></button>
+              <i aria-hidden="true"></i>
+              <button type="button" data-cmd="createLink" title="Link" aria-label="Link"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+              <i aria-hidden="true"></i>
+              <button type="button" data-block="h2" title="Heading 2" aria-label="Heading 2" style="width:auto;padding:0 6px">H2</button>
+              <button type="button" data-block="h3" title="Heading 3" aria-label="Heading 3" style="width:auto;padding:0 6px">H3</button>
+              <button type="button" data-block="p" title="Normal text" aria-label="Normal text">¶</button>
+              <i aria-hidden="true"></i>
+              <button type="button" data-cmd="removeFormat" title="Clear formatting" aria-label="Clear formatting"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h11v2M9.5 5 7 19M5 19h5M15 14l6 6M21 14l-6 6"/></svg></button>
+            </div>
+            <div class="rte-ed" id="ltBody" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="ltBodyL" data-placeholder="Write the template body…" style="min-height:240px;max-height:360px"></div>
+          </div>
+          <p class="ferr" id="ltBody-err" hidden></p>
+          <p class="hint">Fields shown like <span class="fchip" style="cursor:default">Client name</span> are filled in automatically when the letter is sent.</p>
+        </div>
+      </div>
+      <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn" id="ltSave">Create template</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete template confirm -->
+<div class="dlg-back" id="delDlg" hidden>
+  <div class="dlg sm" role="alertdialog" aria-modal="true" aria-labelledby="delTitle" aria-describedby="delMsg">
+    <div class="dlg-h"><div><h2 id="delTitle">Delete template</h2><p id="delMsg"></p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close autofocus>Cancel</button><button type="button" class="dbtn danger" id="delGo">Delete template</button></div>
+  </div>
+</div>
+
+<script src="assets/acurat.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var IC=function(d,s){s=s||16;return '<svg aria-hidden="true" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';};
+
+  /* Workspace name (same as ui_screens: the signed-in tenant) */
+  var WS={acme:'Acme CPA Group',beacon:'Beacon Tax Advisors'},auth={};try{auth=JSON.parse(localStorage.getItem('acurat.auth'))||{};}catch(e){}
+  $('wsName').lastChild.textContent='Workspace · '+(WS[auth.schema]||WS.acme);
+
+  /* ---------- Sections (ui_screens SETTINGS_TABS) ---------- */
+  var I={user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',team:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/>',
+    app:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    shield:'<path d="M12 3l8 3v6c0 4.4-3.4 8.4-8 9-4.6-.6-8-4.6-8-9V6z"/>',key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2"/><path d="M16 7l3 3"/><path d="M19 4l2 2"/>',
+    api:'<path d="M8 3v4M16 3v4M6 7h12v4a6 6 0 0 1-12 0z"/><path d="M12 17v4"/>',cloud:'<path d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 10a4 4 0 0 1-1 7.9"/><path d="M12 12v8M9 17l3 3 3-3"/>',
+    file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',box:'<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/>',
+    bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'};
+  var TABS=[
+    {id:'my-profile',label:'My Profile',icon:'user',title:'My Profile',desc:'Update your personal details, password, and avatar.'},
+    {id:'members',label:'User Management',icon:'team',title:'User Management',desc:'Invite, remove, and manage members in your workspace.'},
+    {id:'workspace',label:'Workspace',icon:'app',title:'Workspace',desc:'Update workspace name, branding, and general preferences.'},
+    {id:'roles-permissions',label:'Roles & Permissions',icon:'shield',title:'Roles & Permissions',desc:'Define roles and the actions each role can perform.'},
+    {id:'api-keys',label:'API Keys',icon:'key',title:'API Keys',desc:'Generate and revoke keys for programmatic access to your workspace.'},
+    {id:'lacerte',label:'Lacerte',icon:'api',title:'Lacerte integration',desc:'Your Lacerte install path and export defaults (per account).'},
+    {id:'bridge',label:'Bridge',icon:'cloud',title:'Acurat Bridge',desc:'Download the app that connects this workspace to Lacerte on your computer.'},
+    {id:'templates',label:'Templates',icon:'file',title:'Templates',desc:'Reusable engagement letter and email bodies your workspace can pick from.'},
+    {id:'forms',label:'Documents',icon:'box',children:[
+      {id:'forms-categories',label:'Categories',icon:'box',title:'Categories',desc:'Top-level groupings used to organise your form catalogue.'},
+      {id:'forms-subcategories',label:'Subcategories',icon:'box',title:'Subcategories',desc:'Second-level groupings nested under categories.'}]},
+    {id:'notifications',label:'Notifications',icon:'bell',title:'Notifications',desc:'Choose what gets sent to email, in-app, and your team Slack.'}];
+  var flat=[];TABS.forEach(function(t){if(t.children)t.children.forEach(function(c){flat.push(c);});else flat.push(t);});
+  var find=function(id){for(var i=0;i<flat.length;i++)if(flat[i].id===id)return flat[i];return null;};
+  var params=new URLSearchParams(location.search);
+  var active=find(params.get('tab'))?params.get('tab'):'my-profile', docsOpen=/^forms-/.test(active), tplKind=params.get('kind')==='letters'?'letters':'questionnaires';
+
+  function renderNav(){
+    var h='';
+    TABS.forEach(function(t){
+      if(t.children){
+        var childOn=t.children.some(function(c){return c.id===active;});
+        h+='<button type="button" class="snav'+(childOn?' on':'')+'" data-parent aria-expanded="'+docsOpen+'" aria-controls="docsKids">'+IC(I[t.icon])+'<span>'+esc(t.label)+'</span><svg class="chev" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>';
+        h+='<div id="docsKids" style="display:flex;flex-direction:column;gap:2px">'+t.children.map(function(c){return '<a href="?tab='+c.id+'" class="snav sub" data-tab="'+c.id+'"'+(c.id===active?' aria-current="page"':'')+(docsOpen?'':' hidden')+'>'+esc(c.label)+'</a>';}).join('')+'</div>';
+      }else h+='<a href="?tab='+t.id+'" class="snav" data-tab="'+t.id+'"'+(t.id===active?' aria-current="page"':'')+'>'+IC(I[t.icon])+'<span>'+esc(t.label)+'</span></a>';
+    });
+    $('snav').innerHTML=h;
+  }
+  function go(id){
+    active=id;if(/^forms-/.test(id))docsOpen=true;
+    var q='?tab='+id+(id==='templates'&&tplKind==='letters'?'&kind=letters':'');
+    if(history.replaceState)history.replaceState(null,'',location.pathname+q);
+    renderNav();renderPanel();$('panel').scrollTop=0;
+  }
+  $('snav').addEventListener('click',function(e){
+    var p=e.target.closest('[data-parent]');
+    if(p){docsOpen=!docsOpen;if(docsOpen&&!/^forms-/.test(active)){go('forms-categories');}else renderNav();return;}
+    var a=e.target.closest('[data-tab]');if(!a)return;e.preventDefault();go(a.dataset.tab);
+  });
+
+  /* ---------- Placeholder panel (ui_screens PlaceholderPanel) ---------- */
+  function placeholder(t){
+    return '<h2 class="ptitle">'+esc(t.title)+'</h2><p class="psub">'+esc(t.desc)+'</p>'+
+      '<div class="ph-box"><div class="ph-ic">'+IC(I[t.icon],24)+'</div><b>'+esc(t.title)+' settings — coming soon</b><span>We’re still building this section. It will live here once the form fields are wired up.</span></div>';
+  }
+
+  /* ---------- Templates data (ui_screens data/engagements.js + data/letterTemplates.js) ---------- */
+  var QT=[
+    {id:'qt-1',name:'2025 Individual tax organizer',description:'Income, life changes, deductions',usedFor:['1040'],questions:22,rules:14,edited:'Oct 12 · Rita K.',status:'Published',usedIn:38},
+    {id:'qt-2',name:'New client intake',description:'Contact, filing history, prior CPA',usedFor:['All types'],questions:12,rules:3,edited:'Sep 30 · Ashok S.',status:'Published',usedIn:21},
+    {id:'qt-3',name:'Business owner questionnaire',description:'Entities, ownership, payroll',usedFor:['1065','1120-S','1120'],questions:28,rules:19,edited:'Oct 2 · Sam M.',status:'Published',usedIn:9},
+    {id:'qt-4',name:'Estate and trust questions',description:'Beneficiaries, distributions',usedFor:['1041'],questions:15,rules:6,edited:'Oct 15 · Rita K.',status:'Draft',usedIn:0},
+    {id:'qt-5',name:'Payroll tax intake',description:'Employees, payroll provider, deposits',usedFor:['941','940'],questions:10,rules:2,edited:'Aug 21 · Ashok S.',status:'Published',usedIn:3}];
+  // Edits saved in the questionnaire editor (Save draft / Publish) come back here
+  var SAVED={};try{SAVED=JSON.parse(localStorage.getItem('acurat.qt'))||{};}catch(e){}
+  Object.keys(SAVED).forEach(function(id){var cur=QT.filter(function(t){return t.id===id;})[0];if(cur){for(var k in SAVED[id])cur[k]=SAVED[id][k];}else QT.unshift(SAVED[id]);});
+  var openEditor=function(id){location.href='questionnaire-editor.html?id='+encodeURIComponent(id);};
+  var LT=[
+    {id:'lt-1',name:'Standard 1040 engagement',description:'Individual return engagement letter with scope, fees and e-sign request.',is_active:true,body:'<p>Dear {{Client name}},</p><p>Thank you for engaging us to prepare your {{Filing status}} return for tax year {{Tax year}}. This letter outlines the scope of our engagement and the responsibilities of each party.</p><p><strong>Scope.</strong> We will prepare your federal and state income tax returns based on documents you provide. Bookkeeping, audit defense, and entity-level work are not included.</p><p>Please review and sign below to confirm. We look forward to working with you.</p><p>Sincerely,<br>{{Preparer name}}</p>'},
+    {id:'lt-2',name:'Returning client',description:"Warmer, shorter copy for clients you've filed for before.",is_active:true,body:'<p>Hi {{Client name}},</p><p>Great to be working with you again for the {{Tax year}} tax season. This letter renews our engagement for your {{Filing status}} return on the same terms as last year.</p><p>Please review and sign below so we can get started — we will follow up shortly with your document checklist.</p><p>Thanks as always,<br>{{Preparer name}}</p>'},
+    {id:'lt-3',name:'Business entity engagement',description:'Partnership, S-Corp and C-Corp returns — scope, fees and responsibilities.',is_active:true,body:'<p>Dear {{Client name}},</p><p>This letter confirms that we will prepare the {{Tax year}} federal and state income tax returns for your business.</p><p><strong>Your responsibilities.</strong> You are responsible for the accuracy of the books and records you provide, including year-end trial balance and payroll reports.</p><p>Sincerely,<br>{{Preparer name}}</p>'},
+    {id:'lt-4',name:'Extension filing',description:'For clients filing Form 4868 with engagement deferred.',is_active:true,body:'<p>Hi {{Client name}},</p><p>To buy us more time on your {{Tax year}} return, we are filing Form 4868 for an automatic extension. This pushes your filing deadline to October 15.</p><p><strong>Important:</strong> the extension covers the filing deadline only. Any taxes you owe are still due April 15.</p><p>Talk soon,<br>{{Preparer name}}</p>'},
+    {id:'lt-5',name:'Nonprofit 990 engagement',description:'Exempt organization returns (990, 990-EZ, 990-PF).',is_active:true,body:'<p>Dear {{Client name}},</p><p>We are pleased to prepare your organization’s {{Tax year}} information return. This letter sets out the scope of our work and what we need from your board.</p><p>Sincerely,<br>{{Preparer name}}</p>'},
+    {id:'lt-6',name:'Payroll tax filings (941 / 940)',description:'Quarterly and annual employment tax filings.',is_active:false,body:'<p>Dear {{Client name}},</p><p>This letter confirms our engagement to prepare your {{Tax year}} employment tax filings.</p><p>{{Preparer name}}</p>'},
+    {id:'lt-7',name:'Blank letter',description:'Start from scratch and write your own copy.',is_active:true,body:'<p><br></p>'}];
+  var TYPES=['1040','1040-SR','1040-NR','1065','1120-S','1120','1041','990','990-EZ','990-PF','706','709','941','940','720','1042'];
+  var MERGE=['Client name','Tax year','Filing status','Preparer name'];
+  var KEBAB='<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+  var PLUS='<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var SEARCH='<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>';
+  var qf={q:'',type:'',status:''}, lf={q:'',page:1,per:5}, debounce=null;
+
+  /* ---------- Templates panel ---------- */
+  function renderTemplates(){
+    var p=$('panel');
+    // Same underline tabs as the client / engagement workspace headers (.ws-tabs)
+    var tab=function(kind,label,count,icon,ctId){return '<a href="?tab=templates'+(kind==='letters'?'&kind=letters':'')+'" data-kind="'+kind+'"'+(tplKind===kind?' aria-current="page"':'')+'>'+IC(icon)+label+'<span class="ct" id="'+ctId+'">'+count+'</span></a>';};
+    p.innerHTML='<div style="display:flex;flex-direction:column;gap:16px">'+
+      '<div><h2 class="ptitle">Templates</h2><p class="psub">Reusable engagement letter and email bodies your workspace can pick from.</p></div>'+
+      '<nav class="ws-tabs adm-tabs" aria-label="Template type">'+
+        tab('questionnaires','Questionnaires',QT.length,'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>','ctQ')+
+        tab('letters','Engagement letters',LT.length,'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M8 17a4 4 0 0 1 8 0"/>','ctL')+
+      '</nav>'+
+      '<div id="tplBody"></div></div>';
+    p.querySelector('.adm-tabs').addEventListener('click',function(e){var a=e.target.closest('[data-kind]');if(!a)return;e.preventDefault();if(a.dataset.kind===tplKind)return;tplKind=a.dataset.kind;go('templates');var t=$('panel').querySelector('.adm-tabs [aria-current]');if(t)t.focus();});
+    tplKind==='letters'?letters():questionnaires();
+  }
+
+  // Questionnaires tab
+  function questionnaires(){
+    var b=$('tplBody');
+    b.innerHTML='<div style="display:flex;flex-direction:column;gap:12px">'+
+      '<div class="cl-bar"><label class="cl-search" style="flex:1 1 200px;min-width:200px;max-width:280px">'+SEARCH+'<span class="sr">Search</span><input id="qQ" type="search" placeholder="Search templates" value="'+esc(qf.q)+'"></label>'+
+        '<label class="sel"><span class="sr">Engagement type</span><select id="qType"><option value="">All engagement types</option>'+TYPES.map(function(t){return '<option'+(qf.type===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></label>'+
+        '<label class="sel"><span class="sr">Status</span><select id="qStatus"><option value="">All statuses</option><option'+(qf.status==='Published'?' selected':'')+'>Published</option><option'+(qf.status==='Draft'?' selected':'')+'>Draft</option></select></label>'+
+        '<span style="display:flex;gap:8px;margin-left:auto"><button type="button" class="mf" id="qLib">Start from Acurat library</button><button type="button" class="add" id="qNew">'+PLUS+'New questionnaire</button></span></div>'+
+      '<div class="ttbl"><div class="tbl-scroll"><div style="min-width:820px"><div class="trw hd q-cols" role="row"><span>Name</span><span>Used for</span><span>Questions</span><span>Rules</span><span>Last edited</span><span>Status</span><span>Used in</span><span><span class="sr">Actions</span></span></div><div id="qRows"></div></div></div></div>'+
+      '<p class="tcap">Editing a published template creates a new version. Questionnaires already sent keep the version they were sent with.</p></div>';
+    Acurat.enhanceSelects(b);
+    $('qQ').addEventListener('input',function(){qf.q=this.value;qRows();});
+    $('qType').addEventListener('change',function(){qf.type=this.value;qRows();});
+    $('qStatus').addEventListener('change',function(){qf.status=this.value;qRows();});
+    $('qLib').onclick=function(){Acurat.toast('Acurat library — coming soon','info');};
+    $('qNew').onclick=function(){location.href='questionnaire-editor.html?id=new';};
+    $('qRows').addEventListener('click',function(e){
+      var k=e.target.closest('.rowbtn'),row=e.target.closest('[data-id]');if(!row)return;
+      var t=QT.filter(function(x){return x.id===row.dataset.id;})[0];
+      if(k){e.stopPropagation();Acurat.menu(k,[
+        {label:'Edit',icon:IC('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'),onClick:function(){openEditor(t.id);}},
+        {label:'Duplicate',icon:IC('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>'),onClick:function(){
+          var c={};for(var x in t)c[x]=t[x];c.id='qt-'+Date.now();c.name='Copy of '+t.name;c.status='Draft';c.usedIn=0;c.edited='Just now · Ashok S.';
+          QT.splice(QT.indexOf(t)+1,0,c);$('ctQ').textContent=QT.length;qRows();Acurat.toast('Duplicated as “'+c.name+'”');}},
+        {sep:true},
+        {label:'Archive',icon:IC('<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/>'),danger:true,onClick:function(){
+          QT.splice(QT.indexOf(t),1);$('ctQ').textContent=QT.length;qRows();Acurat.toast(t.name+' archived','info');}}]);return;}
+      openEditor(t.id);
+    });
+    $('qRows').addEventListener('keydown',function(e){var r=e.target.closest('.trw[data-id]');if(r&&e.target===r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openEditor(r.dataset.id);}});
+    qRows();
+  }
+  function qRows(){
+    var q=qf.q.trim().toLowerCase();
+    var list=QT.filter(function(t){return (!q||t.name.toLowerCase().indexOf(q)>=0)&&(!qf.type||t.usedFor.indexOf(qf.type)>=0||t.usedFor.indexOf('All types')>=0)&&(!qf.status||t.status===qf.status);});
+    $('qRows').innerHTML=list.length?list.map(function(t){
+      return '<div class="trw q-cols click" role="row" data-id="'+t.id+'" tabindex="0" aria-label="Open '+esc(t.name)+'">'+
+        '<span class="nm"><b>'+esc(t.name)+'</b><span>'+esc(t.description)+'</span></span>'+
+        '<span style="display:flex;flex-wrap:wrap;gap:4px">'+t.usedFor.map(function(u){return '<span class="ftag">'+esc(u)+'</span>';}).join('')+'</span>'+
+        '<span class="num">'+t.questions+'</span><span class="num">'+t.rules+'</span><span class="mut">'+esc(t.edited)+'</span>'+
+        '<span><span class="spill '+(t.status==='Published'?'pub':'drf')+'">'+t.status+'</span></span><span class="num">'+t.usedIn+'</span>'+
+        '<span><button type="button" class="rowbtn" aria-label="Actions for '+esc(t.name)+'" title="Actions">'+KEBAB+'</button></span></div>';
+    }).join(''):'<div class="empty-st"><b>No templates match</b><button type="button" class="lnk" id="qClear">Clear filters</button></div>';
+    var c=$('qClear');if(c)c.onclick=function(){qf={q:'',type:'',status:''};questionnaires();};
+  }
+
+  // Engagement letters tab (ui_screens panels/LetterTemplates.js)
+  var stripHtml=function(h){var d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim();};
+  var trunc=function(s,n){return s.length>n?s.slice(0,n-1)+'…':s;};
+  function letters(){
+    var b=$('tplBody');
+    b.innerHTML='<div class="ttbl"><div class="ltbar"><label class="cl-search" style="max-width:320px">'+SEARCH+'<span class="sr">Search</span><input id="lQ" type="search" placeholder="Search templates…" value="'+esc(lf.q)+'"></label><button type="button" class="add" id="lNew">'+PLUS+'New template</button></div>'+
+      '<div class="tbl-scroll"><div style="min-width:560px"><div class="trw hd l-cols" role="row" style="border-radius:0"><span>Template</span><span>Status</span><span style="text-align:right">Actions</span></div><div id="lRows"></div></div></div>'+
+      '<div class="lfoot" id="lFoot"></div></div>';
+    $('lQ').addEventListener('input',function(){var v=this.value;clearTimeout(debounce);debounce=setTimeout(function(){lf.q=v;lf.page=1;lRows();},300);}); // 300ms debounce like ui_screens
+    $('lNew').onclick=function(){openTemplate(null);};
+    $('lRows').addEventListener('click',function(e){
+      var row=e.target.closest('[data-id]');if(!row)return;var t=LT.filter(function(x){return x.id===row.dataset.id;})[0];
+      if(e.target.closest('.tgl')){t.is_active=!t.is_active;lRows();Acurat.toast('Template '+(t.is_active?'activated':'deactivated')+'.');return;}
+      var k=e.target.closest('.rowbtn');
+      if(k)Acurat.menu(k,[{label:'Edit template',icon:IC('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'),onClick:function(){openTemplate(t);}},{sep:true},
+        {label:'Delete template',icon:IC('<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>'),danger:true,onClick:function(){confirmDelete(t);}}]);
+    });
+    $('lFoot').addEventListener('click',function(e){var pb=e.target.closest('[data-pg]');if(pb&&!pb.disabled){lf.page=+pb.dataset.pg;lRows();}});
+    lRows();
+  }
+  function lRows(){
+    var q=lf.q.trim().toLowerCase(),all=LT.filter(function(t){return !q||(t.name+' '+t.description).toLowerCase().indexOf(q)>=0;});
+    var pages=Math.max(1,Math.ceil(all.length/lf.per));if(lf.page>pages)lf.page=pages;
+    var start=(lf.page-1)*lf.per,list=all.slice(start,start+lf.per);
+    $('lRows').innerHTML=list.length?list.map(function(t){
+      return '<div class="trw l-cols" role="row" data-id="'+t.id+'"><span class="nm"><b>'+esc(t.name)+'</b><span title="'+esc(t.description)+'">'+esc(trunc(t.description,110))+'</span></span>'+
+        '<span><button type="button" class="tgl" role="switch" aria-checked="'+t.is_active+'" aria-label="Toggle '+esc(t.name)+'"></button></span>'+
+        '<span style="display:flex;justify-content:flex-end"><button type="button" class="rowbtn" aria-label="Actions for '+esc(t.name)+'" title="Actions">'+KEBAB+'</button></span></div>';
+    }).join(''):'<div class="empty-st" style="padding:40px"><span>'+(q?'No templates match your search.':'No templates yet. Create one to get started.')+'</span></div>';
+    $('ctL').textContent=LT.length;
+    var CL='<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',CR='<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+    var pg='<button type="button" aria-label="Previous page" data-pg="'+(lf.page-1)+'"'+(lf.page<=1?' disabled':'')+'>'+CL+'</button>';
+    for(var n=1;n<=pages;n++)pg+='<button type="button" data-pg="'+n+'"'+(n===lf.page?' aria-current="page"':'')+'>'+n+'</button>';
+    pg+='<button type="button" aria-label="Next page" data-pg="'+(lf.page+1)+'"'+(lf.page>=pages?' disabled':'')+'>'+CR+'</button>';
+    var keepFocus=document.activeElement&&document.activeElement.id==='lPer';
+    $('lFoot').innerHTML='<span>'+(all.length?'Showing '+(start+1)+'–'+(start+list.length)+' of '+all.length+' templates':'Showing 0 templates')+'</span>'+
+      '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap"><nav aria-label="Pagination" class="pg">'+pg+'</nav><label style="display:flex;align-items:center;gap:10px">Rows per page<select id="lPer" aria-label="Rows per page">'+[5,10,25,50,100].map(function(n){return '<option'+(n===lf.per?' selected':'')+'>'+n+'</option>';}).join('')+'</select></label></div>';
+    Acurat.enhanceSelects($('lFoot'));
+    $('lPer').addEventListener('change',function(){lf.per=+this.value;lf.page=1;lRows();});
+    if(keepFocus&&$('lPer')._acs)$('lPer')._acs.btn.focus();
+  }
+
+  /* ---------- Template dialog (New / Edit) ---------- */
+  var tDlg=null,editing=null,touched=false,ed=$('ltBody'),savedRange=null;
+  MERGE.forEach(function(f){var b=document.createElement('button');b.type='button';b.className='fchip';b.textContent=f;
+    b.addEventListener('mousedown',function(e){e.preventDefault();});
+    b.addEventListener('click',function(){restore();document.execCommand('insertText',false,'{{'+f+'}}');ed.dispatchEvent(new Event('input'));});
+    $('ltFields').appendChild(b);});
+  document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s.rangeCount&&ed.contains(s.anchorNode))savedRange=s.getRangeAt(0).cloneRange();});
+  function restore(){ed.focus();var s=window.getSelection();if(savedRange&&ed.contains(savedRange.startContainer)){s.removeAllRanges();s.addRange(savedRange);}else{var r=document.createRange();r.selectNodeContents(ed);r.collapse(false);s.removeAllRanges();s.addRange(r);}}
+  var bar=document.querySelector('#ltRte .rte-bar');
+  bar.addEventListener('mousedown',function(e){if(e.target.closest('button'))e.preventDefault();});
+  bar.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;restore();
+    if(b.dataset.block)document.execCommand('formatBlock',false,b.dataset.block);
+    else if(b.dataset.cmd==='createLink'){var u=window.prompt('Link URL','https://');if(u)document.execCommand('createLink',false,u);}
+    else document.execCommand(b.dataset.cmd,false,null);ed.dispatchEvent(new Event('input'));});
+  function errs(){return {name:$('ltName').value.trim()?'':'Name is required',desc:$('ltDesc').value.trim()?'':'Description is required',body:stripHtml(ed.innerHTML)?'':'Body is required'};}
+  function showErrs(){
+    var e=errs();
+    [['name','ltName'],['desc','ltDesc'],['body','ltBody']].forEach(function(p){
+      var w=document.querySelector('#ltDlg [data-f="'+p[0]+'"]'),m=$(p[1]+'-err'),h=$(p[1]+'-hint'),on=touched&&!!e[p[0]];
+      w.classList.toggle('err',on);m.hidden=!on;m.textContent=on?e[p[0]]:'';if(h)h.hidden=on;
+    });
+    $('ltRte').style.borderColor=touched&&e.body?'#B42318':'';
+    return !e.name&&!e.desc&&!e.body;
+  }
+  ['ltName','ltDesc'].forEach(function(id){$(id).addEventListener('input',function(){if(touched)showErrs();});});
+  ed.addEventListener('input',function(){if(touched)showErrs();});
+  function openTemplate(t){
+    editing=t;
+    if(!tDlg)tDlg=Acurat.dialog($('ltDlg'),{onOpen:function(){
+      touched=false;
+      $('ltTitle').textContent=editing?'Edit template':'New template';
+      $('ltSub').textContent=editing?'Update this template’s content. Changes apply to anything sent from now on.':'Templates are reusable engagement-letter or email bodies.';
+      $('ltSave').textContent=editing?'Save changes':'Create template';
+      $('ltName').value=editing?editing.name:'';$('ltDesc').value=editing?editing.description:'';ed.innerHTML=editing?editing.body:'';savedRange=null;showErrs();
+    }});
+    tDlg.open();
+  }
+  $('ltForm').addEventListener('submit',function(e){
+    e.preventDefault();touched=true;
+    if(!showErrs()){var x=errs();(x.name?$('ltName'):x.desc?$('ltDesc'):ed).focus();return;}
+    var data={name:$('ltName').value.trim(),description:$('ltDesc').value.trim(),body:ed.innerHTML};
+    if(editing){for(var k in data)editing[k]=data[k];Acurat.toast('Template updated.');}
+    else{LT.unshift({id:'lt-'+Date.now(),is_active:true,name:data.name,description:data.description,body:data.body});lf.page=1;Acurat.toast('Template created.');}
+    tDlg.close();lRows();
+  });
+
+  /* ---------- Delete confirm ---------- */
+  var dDlg=null,delT=null;
+  function confirmDelete(t){
+    delT=t;if(!dDlg)dDlg=Acurat.dialog($('delDlg'));
+    $('delMsg').textContent='“'+t.name+'” will be removed. This can’t be undone.';dDlg.open();
+  }
+  $('delGo').onclick=function(){var t=delT;dDlg.close();if(!t)return;LT.splice(LT.indexOf(t),1);lRows();Acurat.toast(t.name+' deleted.');};
+
+  function renderPanel(){active==='templates'?renderTemplates():$('panel').innerHTML=placeholder(find(active));}
+  renderNav();renderPanel();
+})();
+</script>
+</body>
+</html>

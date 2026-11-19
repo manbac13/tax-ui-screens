@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-portal="taxpayer">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acurat — To-do</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body data-ctx="list">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");})();</script>
+<div class="app">
+
+  <!-- Sidebar (taxpayer view: To-do and Engagement at the top, Settings at the bottom) -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="portal-todo.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group">
+      <a href="portal-todo.html" data-nav="todo" aria-current="page" title="To-do"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg><span class="lbl">To-do</span></a>
+      <a href="portal-questionnaire.html" title="Engagement"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H3z"/><path d="M3 10h18l-2 9H5z"/></svg><span class="lbl">Engagement</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="#" data-soon="Settings" title="Settings"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Settings</span></a>
+      <div class="me" title="John E Smith"><div class="av" aria-hidden="true">J</div><div class="who lbl"><b>John E Smith</b><span>TAXPAYER</span></div></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="tp-main">
+    <div class="list-head"><div class="lh-t"><h1>To-do</h1><p id="retLine"></p></div></div>
+    <div class="tp-col" id="view" aria-live="polite"></div>
+  </main>
+</div>
+
+<input type="file" id="fileIn" accept="application/pdf,.pdf" multiple hidden>
+
+<script src="assets/acurat.js"></script>
+<script src="assets/portal.js"></script>
+<script>
+/* To-do (ui_screens pages/portal/Todo.js): the picked return, one step at a time.
+   engagement letter (read → sign → done) → last year's return → questionnaire → documents → e-signature. */
+(function(){
+  var P=window.Portal, T=P.TAXPAYER, F=T.firm, STEPS=P.STEPS, esc=P.esc;
+  var ret=P.current();
+  if(!ret){location.replace('portal-select.html');return;}
+  var $=function(id){return document.getElementById(id);};
+  var root=$('view'), preparer=F.preparer.split(' ')[0];
+  var view='overview', files=[], MAX_MB=25;
+
+  // ---------- icons ----------
+  var svg=function(d,s,w){return '<svg aria-hidden="true" width="'+(s||16)+'" height="'+(s||16)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';};
+  var I={
+    arrow:svg('<path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>',12,2),
+    back:svg('<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',12,2),
+    chev:svg('<path d="M9 18l6-6-6-6"/>',10,2),
+    check:svg('<path d="M20 6L9 17l-5-5"/>',12,2.4),
+    pen:svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',18),
+    file:svg('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/>',18),
+    list:svg('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>',18),
+    upload:svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',18),
+    clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',18),
+    download:svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',14),
+    info:svg('<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',16),
+    x:svg('<path d="M18 6L6 18M6 6l12 12"/>',12,2),
+    q:svg('<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',13),
+    clk:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',13),
+    user:svg('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',13),
+    lock:svg('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',12),
+    big:svg('<path d="M20 6L9 17l-5-5"/>',26,2.4),
+    up24:svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',24)
+  };
+  var fileSize=function(b){return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';};
+  var go=function(v){view=v;render();window.scrollTo(0,0);};
+  var download=function(what){P.toast('Downloading '+what+'…');};
+
+  // ---------- shared pieces ----------
+  function facts(items,cols){
+    var pad=(cols-(items.length%cols))%cols, out=items.map(function(f){return '<div><i>'+esc(f.label)+'</i><b'+(f.ok?' class="ok"':'')+'>'+esc(f.value)+'</b></div>';}).join('');
+    for(var i=0;i<pad;i++)out+='<div aria-hidden="true"></div>';
+    return '<div class="tfacts'+(cols===2?' c2':'')+'">'+out+'</div>';
+  }
+  function head(icon,eyebrow,pill,title,text,opts){
+    opts=opts||{};
+    return '<div class="tcard-h"><span class="tile'+(opts.round?' round':'')+'">'+icon+'</span><div class="tx">'+
+      '<div class="eyebrow"><b'+(opts.mute?' class="mute"':'')+'>'+esc(eyebrow)+'</b>'+(pill||'')+'</div>'+
+      '<h3>'+esc(title)+'</h3><p>'+esc(text)+'</p></div></div>';
+  }
+  var pill=function(label,tone){return '<span class="tpill'+(tone?' '+tone:'')+'">'+esc(label)+'</span>';};
+
+  // ---------- step track ----------
+  function stepTrack(focus){
+    var steps=STEPS.map(function(label,i){
+      var n=i+1, st=n<ret.step?'done':n===ret.step?'cur':'later';
+      var note=st==='done'
+        ?(n===1&&ret.letter.signedOn?'Signed '+ret.letter.signedOn
+          :n===2&&ret.priorReturn?'Uploaded '+ret.priorReturn.uploadedOn
+          :n===3&&ret.questionnaire&&ret.questionnaire.submitted?'Submitted'
+          :ret.skipped&&ret.skipped[n]?'Skipped':'Done')
+        :st==='cur'?(ret.waiting?'In progress':'Needs you'):'Later';
+      return {n:n,label:label,st:st,note:note};
+    });
+    var f=steps[(focus||ret.step)-1];
+    var circle=function(s){return '<span class="n">'+(s.st==='done'?I.check:s.n)+'</span>';};
+    var noteCls=function(s){return s.st==='cur'&&!ret.waiting?' class="need"':'';};
+    var wide='<ol class="steps" aria-label="Steps">'+steps.map(function(s){
+      return '<li class="step '+s.st+(s.n===f.n?' focus':'')+'"'+(s.n===f.n?' aria-current="step"':'')+'><span class="bar"></span><span class="row">'+circle(s)+
+        '<span class="t"><b title="'+esc(s.label)+'">'+esc(s.label)+'</b><span'+noteCls(s)+'>'+esc(s.note)+'</span></span></span></li>';
+    }).join('')+'</ol>';
+    var phone='<div class="steps-m"><div class="segs">'+steps.map(function(s){return '<i class="'+s.st+'"></i>';}).join('')+'</div>'+
+      '<div class="row step '+f.st+'">'+circle(f)+'<span class="t"><b>'+esc(f.label)+'</b><span'+noteCls(f)+'>'+esc(f.note)+'</span></span><span class="of">Step '+f.n+' of '+steps.length+'</span></div></div>';
+    return wide.replace('<ol','<ol style="margin:0;padding:0;list-style:none"')+phone;
+  }
+
+  // ---------- step cards ----------
+  function letterCard(){
+    var l=ret.letter;
+    return '<section class="tcard on">'+
+      head(I.pen,'Step 1 · Engagement letter',pill('Awaiting your signature','warn'),'Review and sign your engagement letter',
+        'This is the agreement between you and '+F.name+". It sets out what we'll prepare, what we need from you, our fee, and the terms we work under. We start work on your return once it's signed.")+
+      facts([{label:'Engagement',value:ret.title},{label:'Tax year',value:ret.year},{label:'Firm',value:F.name},
+        {label:'Service',value:l.service},{label:'Fee',value:l.fee},{label:'Sent',value:l.sentOn+' by '+F.preparer+', '+F.preparerTitle}],3)+
+      '<div class="tact"><button type="button" class="tb pri" data-go="read">Review and sign'+I.arrow+'</button>'+
+      '<button type="button" class="tb sec" data-dl="the engagement letter">'+I.download+'Download PDF</button>'+
+      '<span class="note">'+l.pages.length+' pages · '+esc(l.readTime)+' to read</span></div></section>';
+  }
+
+  function signedCard(){
+    var l=ret.letter;
+    return '<section class="tcard tdone"><span class="big">'+I.big+'</span>'+
+      '<div style="display:flex;flex-direction:column;gap:8px;align-items:center"><h3>Engagement letter signed</h3><p>Thanks, '+esc(T.firstName)+'. '+esc(F.name)+' can now start work on your '+esc(ret.title.toLowerCase())+". We've emailed you a signed copy.</p></div>"+
+      facts([{label:'Status',value:'Signed',ok:true},{label:'Date signed',value:l.signedAt},{label:'Signed by',value:l.signedBy},{label:'Countersigned by',value:F.preparer+', '+F.preparerTitle}],2)+
+      '<div class="tact" style="justify-content:center"><button type="button" class="tb sec" data-dl="your signed engagement letter">'+I.download+'Download signed copy</button>'+
+      '<button type="button" class="tb pri" data-go="overview">Continue to last year&#39;s return'+I.arrow+'</button></div></section>';
+  }
+
+  function priorCard(){
+    var ly=ret.year-1;
+    return '<section class="tcard on">'+
+      head(I.file,"Step 2 · Last year's return",pill('Needed','warn'),'Upload your '+ly+' tax return',
+        'Your complete '+ly+' '+ret.form.replace(/^Federal /,'')+' as it was filed, with all schedules. '+preparer+' uses it as a starting point, to carry forward things like losses, depreciation and estimated payments.')+
+      '<div class="tnote">'+I.info+'<span>Only last year&#39;s filed return. You don&#39;t need a blank '+ret.year+' form; we prepare that for you.</span></div>'+
+      '<div class="drop" id="drop">'+I.up24+'<b>Drag your file here</b><button type="button" class="tb sec" id="browse">Browse files</button>'+
+      '<span>PDF only, up to '+MAX_MB+' MB each. If it&#39;s in several files, add them all.</span></div>'+
+      (files.length?'<div class="flist">'+files.map(function(f,i){
+        return '<div class="frow"><span class="pdf" aria-hidden="true">PDF</span><span class="fn"><b>'+esc(f.name)+'</b></span><span class="sz">'+fileSize(f.size)+'</span>'+
+          '<button type="button" class="x" data-rm="'+i+'" aria-label="Remove '+esc(f.name)+'" title="Remove">'+I.x+'</button></div>';
+      }).join('')+'</div>':'')+
+      '<div class="tact"><button type="button" class="tb pri lg" id="submitPrior"'+(files.length?'':' disabled')+'>Submit</button>'+
+      '<span class="note">Didn&#39;t file in '+ly+', or can&#39;t find it? <button type="button" class="tlnk" id="tellPrep">Tell '+esc(preparer)+'</button></span></div></section>';
+  }
+
+  function uploadedCard(){
+    return '<section class="tcard">'+
+      head(I.check.replace(/width="12" height="12"/,'width="18" height="18"'),"Step 2 · Last year's return",pill('Uploaded','ok'),'We have your '+(ret.year-1)+' tax return',
+        'Nothing more to do here. If '+preparer+" needs a page that's missing, they'll add a request to your to-dos.",{round:true,mute:true})+
+      '<div class="flist">'+ret.priorReturn.files.map(function(f){
+        return '<div class="frow"><span class="pdf" aria-hidden="true">PDF</span><span class="fn"><b>'+esc(f.name)+'</b><span>'+fileSize(f.size)+' · Uploaded '+esc(f.uploadedAt)+'</span></span>'+
+          '<button type="button" class="tlnk" data-view="'+esc(f.name)+'">View</button></div>';
+      }).join('')+'</div>'+
+      '<div class="tact"><button type="button" class="tb pri" data-go="overview">Continue to questionnaire'+I.arrow+'</button>'+
+      '<button type="button" class="tlnk" data-go="replace">Replace files</button></div></section>';
+  }
+
+  function questionnaireCard(){
+    var qs=P.questionsOf(ret.questionnaire), count=qs.length||12, answered=qs.filter(function(q){return q.answer;}).length, mins=Math.max(5,Math.round(count*0.6));
+    return '<section class="tcard on">'+
+      head(I.list,'Step 3 · Questionnaire',pill(answered?answered+' of '+count+' answered':'Not started','warn'),preparer+' sent you some questions',
+        'They need to know about your '+ret.year+' so they can prepare your return: your household, income, deductions and anything that changed. Your answers also tell us which documents to ask for next.')+
+      '<div class="tsum"><div class="tx"><b>'+ret.year+' '+esc(ret.kind)+' tax questionnaire</b><span>Sent '+esc(ret.lastActivity)+' by '+esc(F.preparer)+', '+esc(F.preparerTitle)+'</span></div>'+
+      '<div class="tchips"><span class="tchipn">'+I.q+count+' questions</span><span class="tchipn">'+I.clk+'About '+mins+' minutes</span></div></div>'+
+      '<div class="tact"><button type="button" class="tb pri" data-href="portal-questionnaire.html">'+(answered?'Continue answering':'Answer questions')+I.arrow+'</button>'+
+      '<button type="button" class="tb sec" data-skip="3">Skip for now</button><span class="note">Answers save as you go, so you can stop and come back.</span></div></section>';
+  }
+
+  function documentsCard(){
+    return '<section class="tcard on">'+
+      head(I.upload,'Step 4 · Documents',pill('Not started','warn'),'Upload your tax documents',
+        'Upload the forms and statements for your '+ret.year+' return, like W-2s, 1099s and mortgage statements.')+
+      '<div class="tact"><button type="button" class="tb pri" data-href="portal-documents.html">Upload documents'+I.arrow+'</button>'+
+      '<button type="button" class="tb sec" data-skip="4">Skip for now</button></div></section>';
+  }
+
+  function esignCard(){
+    return '<section class="tcard on">'+
+      head(I.pen,'Step 5 · E-signature',pill('Awaiting your signature','warn'),'Your documents are ready to sign',
+        preparer+' has sent documents that need your signature before we can move forward with your return. Review each one and sign electronically.')+
+      '<div class="tsum"><div class="tx"><b>Documents to sign · '+esc(ret.title)+'</b><span>Sent '+esc(ret.lastActivity)+' by '+esc(F.preparer)+', '+esc(F.preparerTitle)+'</span></div>'+
+      '<div class="tchips"><span class="tchipn">'+I.user+'Your signature</span><span class="tchipn">'+I.clk+'About 2 minutes</span></div></div>'+
+      '<div class="tact"><button type="button" class="tb pri" data-href="portal-signatures.html">Review and sign'+I.arrow+'</button>'+
+      '<span class="note">Once you&#39;ve signed, we&#39;ll take care of the next steps and keep you updated here.</span></div></section>';
+  }
+
+  function laterCard(){
+    var name=STEPS[ret.step-1];
+    return '<section class="tcard">'+
+      head(I.clock,'Step '+ret.step+' · '+name,ret.waiting?pill('In progress'):'',ret.waiting?"We're working on it":name,ret.waiting||"This step will open here when it's ready.")+
+      '<div style="padding-left:64px"><button type="button" class="tb sec" data-go="read">View signed engagement letter</button></div></section>';
+  }
+
+  // ---------- flow bar (read → sign → done) ----------
+  function flowBar(stage,linkPast){
+    return '<div class="flow"><button type="button" class="tlnk" data-go="overview">'+I.back+'Back to to-dos</button><ol>'+
+      ['Read the letter','Sign','Done'].map(function(label,i){
+        var t=(i+1)+'. '+label, sep=i?I.chev:'';
+        if(i<stage&&linkPast)return '<li>'+sep+'<button type="button" class="tlnk" data-go="read">'+t+'</button></li>';
+        return '<li'+(i===stage?' class="cur" aria-current="step"':'')+'>'+sep+t+'</li>';
+      }).join('')+'</ol></div>';
+  }
+
+  // ---------- read the letter ----------
+  function letterSheets(){
+    var l=ret.letter, total=l.pages.length, c=T.address.indexOf(', ');
+    return l.pages.map(function(sections,i){
+      var h='';
+      if(i===0)h='<div class="lh"><div class="fm"><span class="lg" aria-hidden="true">'+esc(F.name.charAt(0))+'</span><div><b>'+esc(F.name)+'</b><small>Certified Public Accountants</small></div></div>'+
+        '<div class="ad"><small>'+esc(F.address)+'</small><small>'+esc(F.phone)+' · '+esc(F.email)+'</small></div></div>'+
+        '<p>'+esc(l.date)+'</p><p>'+esc(T.name)+'<br>'+esc(T.address.slice(0,c))+'<br>'+esc(T.address.slice(c+2))+'</p>'+
+        '<p><b>Re: '+esc(l.subject)+'</b></p><p>Dear '+esc(T.firstName)+',</p><p>'+esc(l.intro)+'</p>';
+      h+=sections.map(function(s){return '<h4>'+esc(s.heading)+'</h4>'+s.paragraphs.map(function(p){return '<p>'+esc(p)+'</p>';}).join('');}).join('');
+      if(i===total-1)h+='<p style="padding-top:12px">Sincerely,<br><br>'+esc(F.preparer)+', '+esc(F.preparerTitle)+'<br>'+esc(F.name)+'</p>'+
+        '<div class="acc"><b>Accepted and agreed</b><div class="ln"><div><div class="sg">'+(l.status==='signed'?'<span class="script">'+esc(l.signedBy)+'</span>':'')+'</div><small>'+esc(T.name)+'</small></div>'+
+        '<div><div class="sg">'+(l.status==='signed'?esc(l.signedOn):'')+'</div><small>Date</small></div></div></div>';
+      return '<article class="sheet" aria-label="Page '+(i+1)+' of '+total+'">'+h+'<div class="pg">Page '+(i+1)+' of '+total+'</div></article>';
+    }).join('');
+  }
+  function readView(){
+    var l=ret.letter, signed=l.status==='signed';
+    return flowBar(signed?2:0)+
+      '<div class="rl"><div style="display:flex;flex-direction:column;gap:12px;min-width:0"><div class="rl-h"><h2>Engagement letter</h2><span>'+l.pages.length+' pages · scroll to read</span></div>'+
+      '<div class="sheets" tabindex="0" aria-label="Engagement letter">'+letterSheets()+'</div></div>'+
+      '<aside class="glance"><div>'+(signed?pill('Signed '+l.signedOn,'ok'):pill('Awaiting your signature','warn'))+'</div><h3>At a glance</h3><dl>'+
+      '<div><dt>From</dt><dd><b style="font-weight:600">'+esc(F.name)+' · '+esc(F.preparer)+', '+esc(F.preparerTitle)+'</b></dd></div>'+
+      '<div><dt>What we&#39;ll do</dt><dd>'+esc(l.whatWeDo)+'</dd></div><div><dt>Not included</dt><dd>'+esc(l.notIncluded)+'</dd></div>'+
+      '<div><dt>Fee</dt><dd>'+esc(l.feeDetail)+'</dd></div><div><dt>Your part</dt><dd>'+esc(l.yourPart)+'</dd></div></dl>'+
+      '<div class="acts">'+(signed?'':'<button type="button" class="tb pri full" data-go="sign">'+svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',14)+'Sign this letter</button>')+
+      '<button type="button" class="tb sec full" data-dl="'+(signed?'your signed engagement letter':'the engagement letter')+'">'+I.download+(signed?'Download signed copy':'Download PDF')+'</button></div></aside></div>';
+  }
+
+  // ---------- sign ----------
+  var sig={name:T.name,mode:'type',ink:false,consent:false,agree:false};
+  function signView(){
+    var today=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'America/Los_Angeles'});
+    return flowBar(1,true)+
+      '<div class="sgn"><div class="tp-h"><h2>Sign your engagement letter</h2><p>'+esc(ret.title)+' · '+esc(F.name)+' · <button type="button" class="tlnk" data-go="read">Read the letter again</button></p></div>'+
+      '<section class="tcard">'+
+        '<div class="sgf"><label for="sgName">Full legal name</label><input class="tinp" id="sgName" autocomplete="name" value="'+esc(sig.name)+'"><span class="hint">As it appears on your tax return.</span></div>'+
+        '<div class="sgf"><div class="top"><span class="lbl" id="sgLbl">Signature</span><div class="dseg" role="tablist" aria-labelledby="sgLbl">'+
+          ['type','draw'].map(function(m){return '<button type="button" role="tab" data-mode="'+m+'" aria-selected="'+(sig.mode===m)+'">'+(m==='type'?'Type':'Draw')+'</button>';}).join('')+'</div></div>'+
+          '<div class="pad">'+(sig.mode==='type'
+            ?'<div class="ln"><span class="script" id="sgPreview">'+(esc(sig.name.trim())||'&nbsp;')+'</span></div>'
+            :'<div class="cv"><canvas id="sgCanvas" aria-label="Signature pad"></canvas><button type="button" class="tlnk mute clr" id="sgClear">Clear</button></div>')+'</div>'+
+          (sig.mode==='draw'?'<span class="hint">Sign with your mouse, pen or finger.</span>':'')+'</div>'+
+        '<div class="sgf"><span class="lbl">Date</span><div class="tdate">'+esc(today)+'</div></div>'+
+        '<div class="thr"></div>'+
+        '<div class="consent"><b>Consent to electronic records and signatures.</b> By signing electronically you agree that your electronic signature has the same legal effect as a handwritten one, under the federal E-SIGN Act. You can ask for a paper copy at any time at no charge, and you can withdraw this consent by contacting '+esc(F.name)+'.</div>'+
+        '<div style="display:flex;flex-direction:column;gap:10px">'+
+          '<label class="dchk"><input type="checkbox" id="sgConsent"'+(sig.consent?' checked':'')+'>I agree to use electronic records and signatures.</label>'+
+          '<label class="dchk"><input type="checkbox" id="sgAgree"'+(sig.agree?' checked':'')+'>'+esc(ret.letter.agreement)+'</label></div>'+
+        '<button type="button" class="tb pri lg full" id="sgSubmit">Sign and accept</button>'+
+        '<div class="audit">'+I.lock+'<span>Your name, signature, date, time and IP address are recorded in a secure audit trail attached to the signed document.</span></div>'+
+      '</section></div>';
+  }
+  function canSign(){return sig.name.trim()&&sig.consent&&sig.agree&&(sig.mode==='type'||sig.ink);}
+  function syncSign(){var b=$('sgSubmit');if(b)b.disabled=!canSign();}
+  function wireSign(){
+    $('sgName').addEventListener('input',function(){sig.name=this.value;var p=$('sgPreview');if(p)p.innerHTML=esc(sig.name.trim())||'&nbsp;';syncSign();});
+    $('sgConsent').addEventListener('change',function(){sig.consent=this.checked;syncSign();});
+    $('sgAgree').addEventListener('change',function(){sig.agree=this.checked;syncSign();});
+    root.querySelectorAll('[data-mode]').forEach(function(b){b.addEventListener('click',function(){
+      if(sig.mode===b.getAttribute('data-mode'))return;sig.mode=b.getAttribute('data-mode');sig.ink=false;render();
+      var nb=root.querySelector('[data-mode="'+sig.mode+'"]');if(nb)nb.focus();});});
+    var c=$('sgCanvas');
+    if(c){
+      var r=window.devicePixelRatio||1;c.width=c.offsetWidth*r;c.height=c.offsetHeight*r;
+      var ctx=c.getContext&&c.getContext('2d'), drawing=false;
+      if(ctx){ctx.scale(r,r);ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#101828';}
+      var pt=function(e){var b=c.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top];};
+      c.addEventListener('pointerdown',function(e){if(!ctx)return;drawing=true;c.setPointerCapture(e.pointerId);ctx.beginPath();var p=pt(e);ctx.moveTo(p[0],p[1]);});
+      c.addEventListener('pointermove',function(e){if(!drawing)return;var p=pt(e);ctx.lineTo(p[0],p[1]);ctx.stroke();if(!sig.ink){sig.ink=true;syncSign();}});
+      var up=function(){drawing=false;};c.addEventListener('pointerup',up);c.addEventListener('pointerleave',up);
+      $('sgClear').addEventListener('click',function(){if(ctx)ctx.clearRect(0,0,c.width,c.height);sig.ink=false;syncSign();});
+    }
+    $('sgSubmit').addEventListener('click',function(){
+      if(!canSign())return;
+      P.signLetter(sig.name.trim());ret=P.current();P.refreshBadge();
+      P.toast('Engagement letter signed');go('done');
+    });
+    syncSign();
+  }
+
+  // ---------- upload (step 2) ----------
+  function addFiles(list){
+    var picked=Array.prototype.slice.call(list||[]);
+    var pdfs=picked.filter(function(f){return f.type==='application/pdf'||/\.pdf$/i.test(f.name);});
+    var fits=pdfs.filter(function(f){return f.size<=MAX_MB*1048576;});
+    if(pdfs.length<picked.length)P.toast('Only PDF files can be uploaded here.','error');
+    else if(fits.length<pdfs.length)P.toast('Each file must be '+MAX_MB+' MB or smaller.','error');
+    fits.forEach(function(f){if(!files.some(function(p){return p.name===f.name&&p.size===f.size;}))files.push(f);});
+    render();
+  }
+  function wirePrior(){
+    var drop=$('drop');if(!drop)return;
+    $('browse').addEventListener('click',function(){$('fileIn').click();});
+    drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over');});
+    drop.addEventListener('dragleave',function(){drop.classList.remove('over');});
+    drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');addFiles(e.dataTransfer.files);});
+    $('tellPrep').addEventListener('click',function(){P.toast("We've let "+preparer+" know. They'll follow up by email.");});
+    $('submitPrior').addEventListener('click',function(){
+      if(!files.length)return;
+      P.submitPriorReturn(files);ret=P.current();files=[];P.refreshBadge();
+      P.toast('Thanks — your '+(ret.year-1)+' return is with '+preparer+'.');go('uploaded');
+    });
+  }
+  $('fileIn').addEventListener('change',function(){addFiles(this.files);this.value='';});
+
+  // ---------- page ----------
+  var HEADINGS=[
+    ['Let’s start with your engagement letter','We’ll take you through each step in order.'],
+    ['Next: last year’s tax return','Your engagement letter is signed.'],
+    ['Next: answer '+preparer+'’s questions','We have your engagement letter and last year’s return.'],
+    ['Next: upload your documents','Thanks for answering the questionnaire.'],
+    ['Last step: sign your documents','We have everything we need from you.']
+  ];
+  function overview(){
+    var h=view==='replace'?HEADINGS[1][0]:HEADINGS[ret.step-1][0];
+    var s=view==='replace'?'Step 2 of '+STEPS.length+'. Upload the files again — they replace what you sent before.':'Step '+ret.step+' of '+STEPS.length+'. '+HEADINGS[ret.step-1][1];
+    var card=view==='uploaded'?uploadedCard()
+      :view==='replace'||(ret.step===2&&!ret.waiting)?priorCard()
+      :ret.step===1?letterCard()
+      :ret.step===3&&!ret.waiting?questionnaireCard()
+      :ret.step===4&&!ret.waiting?documentsCard()
+      :ret.step===5&&!ret.waiting?esignCard()
+      :laterCard();
+    return '<div class="tp-h"><h2>'+esc(h)+'</h2><p>'+esc(s)+'</p></div>'+stepTrack(view==='overview'?0:2)+card;
+  }
+  function render(){
+    $('retLine').textContent=ret.title+' · '+ret.form;
+    root.innerHTML=view==='read'?readView():view==='sign'?signView():view==='done'?flowBar(2)+signedCard():overview();
+    if(view==='sign')wireSign();
+    if(root.querySelector('#drop'))wirePrior();
+  }
+
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b||!root.contains(b))return;
+    if(b.hasAttribute('data-go')){var v=b.getAttribute('data-go');if(v==='replace')files=[];go(v);return;}
+    if(b.hasAttribute('data-dl')){download(b.getAttribute('data-dl'));return;}
+    if(b.hasAttribute('data-rm')){files.splice(+b.getAttribute('data-rm'),1);render();return;}
+    if(b.hasAttribute('data-view')){P.toast('Opening '+b.getAttribute('data-view')+'…','info');return;}
+    if(b.hasAttribute('data-skip')){P.skipStep(+b.getAttribute('data-skip'));ret=P.current();P.refreshBadge();go('overview');return;}
+    if(b.hasAttribute('data-href')){location.href=b.getAttribute('data-href');return;}
+    if(b.hasAttribute('data-soon')){P.toast(b.getAttribute('data-soon')+' is coming soon.','info');}
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

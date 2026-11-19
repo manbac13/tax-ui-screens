@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engagements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.tbl-scroll{overflow-x:auto}
+.row-link::after{content:"";position:absolute;inset:0}
+.crow{cursor:pointer;transition:background .15s}
+.crow:hover{background:#F8FAFC}
+.row-link:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+@media (min-width:1200px){.tbl-scroll{overflow:visible}}
+@media (min-width:1100px){.msg-shell{height:840px}.msg-shell>*{height:100%}}
+details.grp>summary{list-style:none;cursor:pointer}details.grp>summary::-webkit-details-marker{display:none}details.grp>summary .chev{transition:transform .15s}details.grp:not([open])>summary .chev{transform:rotate(-90deg)}details.grp>summary:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px;border-radius:6px}.v2-banner{position:relative;overflow:hidden}.v2-banner>*{position:relative}.v2-banner>.v2-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(15,23,42,0.08) 0 1px,transparent 1px 16px);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%)}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+</head>
+<body data-ctx="list">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");try{if(b.hasAttribute("data-focusable")&&sessionStorage.getItem("acurat.focus")==="1")b.classList.add("focus")}catch(e){}})();</script>
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="index.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group"><div class="sec">Platform</div>
+      <a href="index.html" title="Clients"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg><span class="lbl">Clients</span></a>
+      <a href="engagements.html" aria-current="page" title="Engagements"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg><span class="lbl">Engagements</span></a>
+      <a href="#" title="Review"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span class="lbl">Review</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="admin.html" title="Administration"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Administration</span></a>
+      <a href="docs.html" title="Documentation"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg><span class="lbl">Documentation</span></a>
+      <a href="help.html" title="Help &amp; Support"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span class="lbl">Help &amp; Support</span></a>
+      <div class="me" title="demo@acurat.com"><div class="av" aria-hidden="true">D</div><div class="who lbl"><b>demo@acurat.com</b><span>ACCOUNT</span></div></div>
+    </div>
+  </nav>
+
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; background: #F8FAFC; display: flex; flex-direction: column;">
+
+  <div style="flex: 1; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 16px;">
+    <div class="list-head"><div class="lh-t"><h1>Engagements</h1><p>Every return, from engagement letter to delivery</p></div><div class="lh-r"><div class="kpis"><span class="kpi"><b id="kEng">0</b>engagements</span><span class="kpi"><b id="kCli">0</b>clients</span><span class="kpi warn" id="kOver"><b>0</b>overdue</span></div><button class="ty" id="tyBtn" title="Change tax year" aria-haspopup="menu"><span id="tyLbl">All tax years</span> <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div></div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <!-- Toolbar: shared filter bar + themed dropdowns (same as Clients) -->
+      <div class="cl-bar">
+        <label class="cl-search"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="sr">Search</span><input id="q" type="search" placeholder="Search engagements or clients"></label>
+        <label class="sel"><span class="sr">Engagement type</span><select id="fType"><option value="">All engagement types</option></select></label>
+        <label class="sel"><span class="sr">Status</span><select id="fStatus"><option value="">All statuses</option><option value="open">Open (not filed)</option><option>Not started</option><option>Letter unsigned</option><option>Gathering docs</option><option>Preparing</option><option>In review</option><option>Ready to deliver</option><option>Filed</option></select></label>
+        <label class="sel"><span class="sr">Assigned to</span><select id="fTeam"><option value="">Assigned to</option></select></label>
+        <span class="bar-sp"></span>
+        <button type="button" class="ic" id="colsBtn" aria-label="Columns" title="Columns"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+        <button type="button" class="add" id="addEng" aria-haspopup="dialog"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add engagement</button>
+      </div>
+      <div class="chips" id="chips" hidden></div>
+
+      <section aria-label="Engagements" style="border: 1px solid #E5E7EB; border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+        <div tabindex="0" aria-label="Engagements table, scrolls sideways" style="overflow: auto; max-height: 640px;"><div id="tbl"></div></div>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+        <span id="showing" style="font-size: 14px; line-height: 20px; color: #4B5563;"></span>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 14px; line-height: 20px; color: #4B5563;">
+          <nav aria-label="Pagination" class="pg" id="pager"></nav>
+          <label style="display: flex; align-items: center; gap: 10px;">Rows per page<select id="perPage" aria-label="Rows per page"><option>5</option><option selected>10</option><option>25</option></select></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var TODAY=new Date('2026-10-12T00:00:00'); // same demo date as the Clients page
+
+  /* ---------- Data: the same clients and engagements as the Clients page ---------- */
+  var CLIENTS=[
+    {id:'smith',name:'Smith Family',type:'Family office',email:'myfirm.client+1005@gmail.com',partner:'AS'},
+    {id:'morgan',name:'Morgan Family Office',type:'Family office',email:'claire.morgan@morganfamilyoffice.com',partner:'RK'},
+    {id:'jms',name:'John M Smith',type:'Business owner',email:'myfirm.client+1004@gmail.com',partner:'SM'},
+    {id:'rivera',name:'Rivera Dental Group',type:'Business',email:'ana.rivera@riveradental.example',partner:'AS'},
+    {id:'patel',name:'Patel Household',type:'Individual',email:'ravi.patel@example.com',partner:'RK'}];
+  var e=function(c,form,name,year,status,due,team,docs,letter,href){return {client:c,form:form,name:name,year:year,status:status,due:due,team:team,docs:docs,letter:letter,href:href};};
+  var ENG=[
+    e('smith','1040','John E & Emily Smith',2025,'Preparing','2026-10-15',['AS','RK','SM'],[4,9],'awaiting','engagement-overview.html'),
+    e('smith','1041','John E Smith Estate',2025,'Letter unsigned','2026-12-15',['AS','RK'],null,'awaiting'),
+    e('smith','709','John E Smith',2025,'Ready to deliver','2026-10-15',['RK','AS'],[2,2],'signed'),
+    e('smith','1065','Smith Family LP',2025,'Gathering docs','2026-09-15',['RK','AS'],[6,8],'signed'),
+    e('smith','990-PF','Smith Family Foundation',2025,'Filed','2026-05-15',['SM'],[7,7],'signed'),
+    e('smith','1040','Lily Smith',2025,'Gathering docs','2026-10-15',['RK'],[1,3],'signed'),
+    e('morgan','990-PF','Morgan Foundation',2025,'Preparing','2026-11-16',['RK','AP'],[10,12],'signed'),
+    e('morgan','1120','Morgan Holdings Inc',2025,'In review','2026-12-15',['RK','SM'],[9,9],'signed'),
+    e('morgan','1065','Morgan Ventures LP',2025,'Filed','2026-09-15',['SM'],[8,8],'signed'),
+    e('morgan','1041','Morgan Family Trust',2025,'Filed','2026-09-30',['RK'],[5,5],'signed'),
+    e('morgan','1040','Claire & David Morgan',2025,'Filed','2026-10-15',['RK','AP'],[14,14],'signed'),
+    e('morgan','709','Claire Morgan',2025,'Filed','2026-04-15',['RK'],[2,2],'signed'),
+    e('morgan','1040','James Morgan',2025,'Filed','2026-04-15',['SM'],[6,6],'signed'),
+    e('morgan','1040','Claire & David Morgan · Planning',2026,'Not started','2027-04-15',['RK'],null,'notsent'),
+    e('jms','1065','Smith & Rowe Partners',2026,'Not started','2027-03-15',['SM'],null,'notsent'),
+    e('jms','1040','John M Smith',2025,'Filed','2026-04-15',['SM'],[9,9],'signed'),
+    e('rivera','1099-NEC','Rivera Dental PC',2026,'Gathering docs','2027-02-01',['SM','JL'],[3,7],'signed'),
+    e('rivera','1120-S','Rivera Dental PC',2025,'Filed','2026-09-15',['AS'],[11,11],'signed'),
+    e('rivera','1040','Ana & Luis Rivera',2025,'Filed','2026-10-15',['AS'],[12,12],'signed'),
+    e('patel','1040','Ravi & Priya Patel',2025,'Gathering docs','2026-10-15',['RK'],[2,8],'signed')];
+  ENG.forEach(function(x,i){x.id='e'+(i+1);});
+  var TYPE={'1040':'Individual','1041':'Trust & Estate Income','709':'Gift Tax','1065':'Partnership','990-PF':'Private Foundation','1120':'C Corporation','1120-S':'S Corporation','1099-NEC':'Contractor payments',
+            '1040-SR':'Individual – Senior','1040-NR':'Individual – Nonresident','990':'Nonprofit','990-EZ':'Nonprofit – Short Form','706':'Estate Transfer Tax','941':'Employment Tax','940':'Unemployment Tax','720':'Excise Tax','1042':'Foreign Withholding'};
+  var TEAM={AS:['Ashok Sudeep','#F5CDB4','#FDEDE3','#9A3412'],RK:['Rita K.','#F2BCD8','#FCE7F3','#A3215F'],SM:['Sam M.','#B7CFF7','#E0ECFD','#1D4ED8'],AP:['Anika P.','#C4C0F4','#ECEBFD','#4338CA'],JL:['Jordan L.','#D5D9DF','#EEF0F3','#374151']};
+  var STEP={'Not started':0,'Letter unsigned':0,'Gathering docs':1,'Preparing':2,'In review':3,'Ready to deliver':4,'Filed':4};
+  var client=function(id){return CLIENTS.filter(function(c){return c.id===id;})[0]||{};};
+  var days=function(d){return Math.round((new Date(d+'T00:00:00')-TODAY)/864e5);};
+  var fmtDue=function(d){var x=new Date(d+'T00:00:00');return x.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(x.getFullYear()!==TODAY.getFullYear()?', '+x.getFullYear():'');};
+
+  /* ---------- Columns (Columns menu can hide any but Engagement / action) ---------- */
+  var COLS=[{k:'eng',h:'ENGAGEMENT',w:'minmax(240px, 1fr)',fixed:true},{k:'type',h:'TYPE',w:'232px'},{k:'year',h:'TAX YEAR',w:'72px'},{k:'letter',h:'LETTER',w:'168px'},
+            {k:'docs',h:'DOCUMENTS',w:'212px'},{k:'stage',h:'STAGE',w:'160px'},{k:'due',h:'DUE',w:'88px'},{k:'team',h:'TEAM',w:'136px'},{k:'act',h:'',w:'56px',fixed:true}];
+  var hidden={};try{hidden=JSON.parse(localStorage.getItem('acurat.eng.cols'))||{};}catch(err){}
+  var visible=function(){return COLS.filter(function(c){return !hidden[c.k];});};
+  var grid=function(){return 'grid-template-columns: '+visible().map(function(c){return c.w;}).join(' ')+';';};
+
+  var CHIP='display: inline-flex; align-items: center; height: 24px; box-sizing: border-box; padding: 0 8px; border-radius: 6px; font-size: 13px; line-height: 16px; white-space: nowrap;';
+  var LET={awaiting:['Awaiting signature','gap: 6px; border: 1px solid #FED7AA; background: #FFF7ED; font-weight: 500; color: #B45309;'],signed:['Signed','gap: 6px; border: 1px solid #BBF7D0; background: #F0FDF4; font-weight: 500; color: #15803D;'],
+           notsent:['Not sent','border: 1px solid #E2E8F0; background: #F8FAFC; font-weight: 400; color: #334155;'],draft:['Draft','border: 1px solid #E2E8F0; background: #F8FAFC; font-weight: 400; color: #334155;']};
+  var bar=function(on){return '<span style="display: block; width: 14px; height: 4px; border-radius: 2px; background: '+on+';"></span>';};
+  function cell(c,x){
+    var cl=client(x.client);
+    switch(c.k){
+      case 'eng':return '<div style="display: flex; align-items: center; gap: 16px; min-width: 0;"><div aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 50%; background: #2F7D3B; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600; display: flex; align-items: center; justify-content: center;">'+esc(x.name.split(/[\s&]+/).filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase())+'</div>'+
+        '<div style="display: flex; flex-direction: column; min-width: 0;"><a href="'+(x.href||'#')+'" class="row-link" data-id="'+x.id+'" style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827; text-decoration: none;">'+esc(x.name)+'</a><span style="font-size: 13px; line-height: 20px; font-weight: 400; color: #64748B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="'+esc(cl.name)+'">'+esc(cl.name)+' · '+esc(cl.email)+'</span></div></div>';
+      case 'type':return '<div><span style="'+CHIP+' border: 1px solid #E2E8F0; background: #F8FAFC; font-weight: 400; color: #334155;">'+esc(x.form+' · '+(TYPE[x.form]||x.form))+'</span></div>';
+      case 'year':return '<div style="font-size: 14px; line-height: 20px; font-weight: 400; color: #111827;">'+x.year+'</div>';
+      case 'letter':var L=LET[x.letter]||LET.notsent;return '<div><span style="'+CHIP+' '+L[1]+'">'+L[0]+'</span></div>';
+      case 'docs':if(!x.docs)return '<div><span style="font-size: 14px; line-height: 20px; color: #64748B; font-weight: 500;">Not requested</span></div>';
+        var dots='';for(var i=0;i<x.docs[1];i++)dots+=bar(i<x.docs[0]?(x.docs[0]===x.docs[1]?'#2E7D4F':'#5CC08A'):'#E2E8F0');
+        return '<div><div role="img" aria-label="'+x.docs[0]+' of '+x.docs[1]+' documents received" style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827;">'+x.docs[0]+' of '+x.docs[1]+' received</span><span style="display: flex; flex-wrap: wrap; gap: 3px;">'+dots+'</span></div></div>';
+      case 'stage':var s=STEP[x.status]||0,m='';for(var j=0;j<4;j++)m+=bar(j<s?'#2F7D3B':'#E2E8F0');
+        return '<div><div role="img" aria-label="Stage: '+esc(x.status)+', step '+s+' of 4" style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827;">'+esc(x.status)+'</span><span style="display: flex; gap: 3px;">'+m+'</span></div></div>';
+      case 'due':var filed=x.status==='Filed',over=!filed&&days(x.due)<0;
+        return '<div style="font-size: 14px; line-height: 20px; font-weight: '+(over?600:400)+'; color: '+(over?'#B42318':filed?'#94A3B8':'#111827')+';"'+(over?' title="Overdue by '+(-days(x.due))+' days"':filed?' title="Filed"':'')+'>'+fmtDue(x.due)+'</div>';
+      case 'team':var names=x.team.map(function(t){return (TEAM[t]||[t])[0];}).join(', ');
+        return '<div role="img" aria-label="Team: '+esc(names)+'" title="'+esc(names)+'" style="display: flex; align-items: center;">'+x.team.slice(0,4).map(function(t){var T=TEAM[t]||[t,'#D5D9DF','#EEF0F3','#374151'];
+          return '<div aria-hidden="true" style="flex: none; margin-right: -6px; box-shadow: 0 0 0 2px #FFFFFF; width: 28px; height: 28px; box-sizing: border-box; border-radius: 50%; border: 1px solid '+T[1]+'; background: '+T[2]+'; color: '+T[3]+'; font-size: 11px; line-height: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center;">'+t+'</div>';}).join('')+
+          (x.team.length>4?'<span style="margin-left: 12px; font-size: 12px; line-height: 16px; color: #64748B; font-weight: 600;">+'+(x.team.length-4)+'</span>':'')+'</div>';
+      case 'act':return '<div><a href="'+(x.href||'#')+'" data-id="'+x.id+'" aria-label="View '+esc(x.name)+'" style="position: relative; z-index: 1; font-size: 14px; line-height: 20px; font-weight: 600; color: #2F7D3B; text-decoration: none;">View</a></div>';
+    }
+  }
+
+  /* ---------- Filters, chips, pagination ---------- */
+  var page=1,year='',LABELS={q:'Search',fType:'Type',fStatus:'Status',fTeam:'Assigned'};
+  function fillSelect(id,opts){var s=$(id),cur=s.value;while(s.options.length>1)s.remove(1);opts.forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];s.appendChild(op);});s.value=opts.some(function(o){return o[0]===cur;})?cur:'';}
+  function syncOptions(){
+    var forms=[];ENG.forEach(function(x){if(forms.indexOf(x.form)<0)forms.push(x.form);});forms.sort();
+    fillSelect('fType',forms.map(function(f){return [f,f+' · '+(TYPE[f]||f)];}));
+    var team=[];ENG.forEach(function(x){x.team.forEach(function(t){if(team.indexOf(t)<0)team.push(t);});});
+    fillSelect('fTeam',Object.keys(TEAM).filter(function(t){return team.indexOf(t)>=0;}).map(function(t){return [t,TEAM[t][0]];}));
+  }
+  function filtered(){
+    var q=$('q').value.trim().toLowerCase(),t=$('fType').value,s=$('fStatus').value,tm=$('fTeam').value;
+    return ENG.filter(function(x){
+      if(year&&String(x.year)!==year)return false;
+      if(t&&x.form!==t)return false;
+      if(s==='open'&&x.status==='Filed')return false;
+      if(s&&s!=='open'&&x.status!==s)return false;
+      if(tm&&x.team.indexOf(tm)<0)return false;
+      var cl=client(x.client);
+      if(q&&(x.name+' '+cl.name+' '+cl.email+' '+x.form+' '+(TYPE[x.form]||'')).toLowerCase().indexOf(q)<0)return false;
+      return true;
+    }).sort(function(a,b){return (a.isNew?0:1)-(b.isNew?0:1)||((a.status==='Filed')-(b.status==='Filed'))||(a.due<b.due?-1:a.due>b.due?1:0);});
+  }
+  var CL='<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',CR='<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+  function render(){
+    var list=filtered(),per=+$('perPage').value||10,pages=Math.max(1,Math.ceil(list.length/per));if(page>pages)page=pages;
+    var start=(page-1)*per,slice=list.slice(start,start+per),cols=visible(),g=grid();
+    var minW=cols.reduce(function(n,c){var m=/(\d+)px/.exec(c.w);return n+(m?+m[1]:0)+16;},48);
+    var h='<div style="min-width: '+minW+'px;"><div role="row" style="display: grid; '+g+' align-items: center; gap: 16px; height: 44px; padding: 0 24px; background: #E9EEF4; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.4px; color: #4B5563; position: sticky; top: 0; z-index: 2;">'+
+      cols.map(function(c){return '<div>'+(c.k==='act'?'<span class="sr">Action</span>':c.h)+'</div>';}).join('')+'</div>';
+    h+=slice.length?slice.map(function(x,i){return '<div role="row" class="crow" style="display: grid; '+g+' align-items: center; gap: 16px; padding: 12px 24px; position: relative;'+(i<slice.length-1?' border-bottom: 1px solid #F0F1F3;':'')+(x.isNew?' background: #F2F8F3;':'')+'">'+cols.map(function(c){return cell(c,x);}).join('')+'</div>';}).join('')
+      :'<div class="empty-st"><b>No engagements match</b><span>Nothing matches your search and filters.</span><button type="button" class="lnk" id="clear2">Clear filters</button></div>';
+    $('tbl').innerHTML=h+'</div>';
+    $('showing').textContent=list.length?'Showing '+(start+1)+'–'+(start+slice.length)+' of '+list.length+' engagements':'Showing 0 engagements';
+    var p='<button type="button" aria-label="Previous page" data-pg="'+(page-1)+'"'+(page<=1?' disabled':'')+'>'+CL+'</button>';
+    for(var n=1;n<=pages;n++)p+='<button type="button" data-pg="'+n+'"'+(n===page?' aria-current="page"':'')+'>'+n+'</button>';
+    $('pager').innerHTML=p+'<button type="button" aria-label="Next page" data-pg="'+(page+1)+'"'+(page>=pages?' disabled':'')+'>'+CR+'</button>';
+    var inYear=ENG.filter(function(x){return !year||String(x.year)===year;});
+    $('kEng').textContent=inYear.length;$('kCli').textContent=Object.keys(inYear.reduce(function(m,x){m[x.client]=1;return m;},{})).length;
+    var over=inYear.filter(function(x){return x.status!=='Filed'&&days(x.due)<0;}).length;$('kOver').querySelector('b').textContent=over;$('kOver').classList.toggle('on',over>0);
+    $('tyLbl').textContent=year?'TY '+year:'All tax years';
+    var out=[];Object.keys(LABELS).forEach(function(id){var el=$(id),v=el.value;if(!v)return;out.push('<span class="chip">'+LABELS[id]+': '+esc(el.tagName==='SELECT'?el.options[el.selectedIndex].text:'“'+v+'”')+'<button type="button" data-clear="'+id+'" aria-label="Remove '+LABELS[id]+' filter">×</button></span>');});
+    if(year)out.push('<span class="chip">Tax year: '+year+'<button type="button" data-clear="year" aria-label="Remove tax year filter">×</button></span>');
+    $('chips').innerHTML=out.length?out.join('')+'<button type="button" class="lnk" id="clearAll">Clear all</button>':'';$('chips').hidden=!out.length;
+  }
+  function clearAll(){Object.keys(LABELS).forEach(function(id){$(id).value='';});year='';page=1;render();}
+  document.querySelector('.cl-bar').addEventListener('input',function(){page=1;render();});
+  document.querySelector('.cl-bar').addEventListener('change',function(){page=1;render();});
+  $('perPage').addEventListener('change',function(){page=1;render();});
+  $('chips').addEventListener('click',function(ev){var b=ev.target.closest('[data-clear]');if(b){if(b.dataset.clear==='year')year='';else $(b.dataset.clear).value='';page=1;render();}if(ev.target.id==='clearAll')clearAll();});
+  $('pager').addEventListener('click',function(ev){var b=ev.target.closest('[data-pg]');if(b&&!b.disabled){page=+b.dataset.pg;render();}});
+  $('tbl').addEventListener('click',function(ev){
+    if(ev.target.closest('#clear2')){clearAll();return;}
+    var a=ev.target.closest('a[data-id]');
+    if(a&&a.getAttribute('href')==='#'){ev.preventDefault();var x=ENG.filter(function(y){return y.id===a.dataset.id;})[0];
+      Acurat.toast((x?x.name+' · '+x.form:'This engagement')+' has no workspace in this demo yet. Try John E & Emily Smith · 1040.','info');}
+  });
+
+  /* ---------- Tax year · Columns ---------- */
+  $('tyBtn').addEventListener('click',function(){var b=this;Acurat.menu(b,[['','All tax years'],['2026','TY 2026'],['2025','TY 2025'],['2024','TY 2024']].map(function(o){
+    return {label:(year===o[0]?'✓  ':'     ')+o[1],onClick:function(){year=o[0];page=1;render();}};}));});
+  $('colsBtn').addEventListener('click',function(){var b=this;Acurat.menu(b,COLS.filter(function(c){return !c.fixed;}).map(function(c){
+    return {label:(hidden[c.k]?'     ':'✓  ')+c.h.charAt(0)+c.h.slice(1).toLowerCase(),onClick:function(){hidden[c.k]=!hidden[c.k];try{localStorage.setItem('acurat.eng.cols',JSON.stringify(hidden));}catch(err){}render();
+      Acurat.toast((hidden[c.k]?'Hid ':'Showing ')+c.h.toLowerCase()+' column','info');}};}).concat([{sep:true},{label:'Reset columns',onClick:function(){hidden={};try{localStorage.removeItem('acurat.eng.cols');}catch(err){}render();}}]));});
+
+  /* ---------- Add engagement: shared dialog with a client picker ---------- */
+  $('addEng').addEventListener('click',function(){
+    window.NewEngagement.open({clients:CLIENTS,allowNewClient:true,engagements:ENG.map(function(x){return {id:x.id,client:x.client,name:x.name,form:x.form,year:x.year,status:x.status,team:x.team};}),onCreated:function(n,draft){
+      var m=/^([A-Za-z]{3}) (\d{1,2}), (\d{4})$/.exec(n.due||''),due='2027-04-15';
+      if(m){var d=new Date(m[1]+' '+m[2]+', '+m[3]);if(!isNaN(d))due=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+      if(n.newClient)CLIENTS.push(n.newClient);
+      ENG.unshift({id:'e'+Date.now(),isNew:true,client:n.clientId,form:n.form,name:n.title,year:n.year,status:'Not started',due:due,team:n.team,docs:null,letter:n.letter});
+      syncOptions();clearAll();
+    }});
+  });
+
+  syncOptions();render();
+})();
+</script>
+  </main>
+</div>
+<script src="assets/acurat.js"></script>
+<script src="assets/new-engagement.js"></script>
+</body>
+</html>

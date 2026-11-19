@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-portal="taxpayer">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acurat — Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.tbl-scroll{overflow-x:auto}
+.row-link::after{content:"";position:absolute;inset:0}
+.crow{cursor:pointer;transition:background .15s}
+.crow:hover{background:#F8FAFC}
+.row-link:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+@media (min-width:1200px){.tbl-scroll{overflow:visible}}
+@media (min-width:1100px){.msg-shell{height:840px}.msg-shell>*{height:100%}}
+details.grp>summary{list-style:none;cursor:pointer}details.grp>summary::-webkit-details-marker{display:none}details.grp>summary .chev{transition:transform .15s}details.grp:not([open])>summary .chev{transform:rotate(-90deg)}details.grp>summary:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px;border-radius:6px}.v2-banner{position:relative;overflow:hidden}.v2-banner>*{position:relative}.v2-banner>.v2-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(15,23,42,0.08) 0 1px,transparent 1px 16px);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%)}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body data-ctx="work">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");})();</script>
+<div class="app">
+
+  <!-- Sidebar (taxpayer view: To-do and Engagement at the top, Settings at the bottom) -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="portal-todo.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group">
+      <a href="portal-todo.html" data-nav="todo" title="To-do"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg><span class="lbl">To-do</span></a>
+      <a href="portal-questionnaire.html" aria-current="page" title="Engagement"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H3z"/><path d="M3 10h18l-2 9H5z"/></svg><span class="lbl">Engagement</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="#" data-soon="Settings" title="Settings"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Settings</span></a>
+      <div class="me" title="John E Smith"><div class="av" aria-hidden="true">J</div><div class="who lbl"><b>John E Smith</b><span>TAXPAYER</span></div></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; background: #F8FAFC; display: flex; flex-direction: column;">
+<header class="ws-head">
+  <div class="ws-id">
+    <a href="portal-todo.html" class="hb" aria-label="Back to to-do" title="Back to to-do"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+    <div class="ws-av" aria-hidden="true">JS</div>
+    <div class="ws-title">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="portal-select.html">Your returns</a><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg><a href="portal-todo.html">To-do</a></nav>
+      <div class="ws-name"><h1 id="engTitle">Engagement</h1><span class="tag" id="engForm"></span></div>
+    </div>
+    <div class="ws-sp"></div>
+    <div class="status" title="Your preparer"><span>Acme CPA Group</span><i>·</i><span>Ashok Sudeep, CPA</span></div>
+  </div>
+  <nav class="ws-tabs" aria-label="Engagement sections"><a href="portal-questionnaire.html" data-tab="questionnaire" aria-current="page"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Questionnaire<span class="ct " hidden>0</span></a><a href="portal-documents.html" data-tab="documents"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>Documents<span class="ct ">5</span></a><a href="portal-signatures.html" data-tab="signatures"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>E-Signature<span class="ct ">3</span></a></nav>
+</header>
+  <div class="ws-body" id="qRoot" style="flex: 1; padding: 40px 40px 40px; display: flex; flex-direction: column; gap: 24px;"></div>
+  </main>
+</div>
+<script src="assets/acurat.js"></script>
+<script src="assets/portal.js"></script>
+<script>
+/* Questionnaire tab, client view (ui_screens sections/Questionnaire.js → ClientQuestionnaire):
+   same layout as the firm Questionnaire tab (summary card, then one card per section), but every
+   question takes an answer: Yes / No / Not sure, plus optional details on Yes. Answers save as they're
+   given; Submit answers sends the finished questionnaire to the preparer. */
+(function(){
+  var A=window.Acurat,P=window.Portal,esc=P.esc,preparer=P.TAXPAYER.firm.preparer.split(' ')[0];
+  var root=document.getElementById('qRoot');
+  var CARD='border: 1px solid #E5E7EB; border-radius: 12px; background: #FFFFFF;';
+  var PILL='display: inline-flex; align-items: center; gap: 6px; height: 24px; box-sizing: border-box; padding: 0 8px; border-radius: 6px; font-size: 13px; line-height: 16px; font-weight: 500; white-space: nowrap;';
+  var TONE={sent:['Sent','border: 1px solid #E2E8F0; background: #F8FAFC; color: #334155;'],prog:['In progress','border: 1px solid #FED7AA; background: #FFF7ED; color: #B45309;'],done:['Submitted','border: 1px solid #BBF7D0; background: #F0FDF4; color: #15803D;']};
+  var PRI='height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14px; border: 0; border-radius: 999px; background: #2F7D3B; font-size: 14px; line-height: 20px; font-weight: 600; color: #FFFFFF; white-space: nowrap;';
+  var CH_ON='height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid #CFE3D3; background: #E3F1E5; font-size: 14px; font-weight: 600; color: #1F6A2E;';
+  var CH_OFF='height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid #E2E8F0; background: #F1F5F9; font-size: 14px; font-weight: 400; color: #334155;';
+  var CHOICES=[['yes','Yes'],['no','No'],['unsure','Not sure']];
+
+  function render(){
+    var ret=P.current(),data=ret&&ret.questionnaire;
+    if(!data){
+      root.innerHTML='<section style="'+CARD+' padding: 24px;"><div class="empty-st"><b>No questionnaire for this return</b><span>'+esc(preparer)+' hasn’t sent you any questions for this return. If they do, they’ll show up here.</span></div></section>';
+      return;
+    }
+    var all=P.questionsOf(data),answered=all.filter(function(q){return q.answer;}).length,allDone=answered===all.length;
+    var st=data.submitted?TONE.done:answered?TONE.prog:TONE.sent,pct=Math.round(answered/Math.max(all.length,1)*100);
+    var meta=['Sent '+data.sent+' by '+preparer,all.length+' questions',data.submitted?'Submitted '+data.submitted:'Answers save as you go'].join(' · ');
+    var h='<section style="'+CARD+' padding: 24px; display: flex; flex-direction: column; gap: 16px;">'+
+      '<div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px;">'+
+        '<div style="display: flex; flex-direction: column; gap: 4px;"><div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;"><h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: #111827;">'+esc(data.title)+'</h2><span style="'+PILL+' '+st[1]+'">'+st[0]+'</span></div>'+
+        '<span style="font-size: 14px; line-height: 20px; font-weight: 400; color: #64748B;">'+esc(meta)+'</span></div>'+
+        (data.submitted?'':'<button type="button" id="qSubmit" class="tb pri"'+(allDone?'':' disabled title="Answer every question to submit"')+'>Submit answers</button>')+
+      '</div>'+
+      '<div style="display: flex; align-items: center; gap: 16px;"><div style="flex: 1;"><div role="progressbar" aria-label="Questions answered" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100" style="height: 10px; border-radius: 10px; background: #E2E8F0;"><div style="width: '+pct+'%; height: 10px; border-radius: 10px; background: #5CC08A;"></div></div></div>'+
+      '<span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827; white-space: nowrap;">'+answered+' of '+all.length+' answered</span></div></section>';
+    // One card, one numbered list — no sections
+    h+='<section style="'+CARD+' overflow: hidden;"><ol style="margin: 0; padding: 0; list-style: none;">'+
+        all.map(function(q,i){
+          var last=i===all.length-1;
+          return '<li data-q="'+q.id+'" style="display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 8px 12px; align-items: start; padding: 16px 24px;'+(last?'':' border-bottom: 1px solid #F0F1F3;')+'">'+
+            '<span style="font-size: 14px; line-height: 20px; color: #64748B; font-variant-numeric: tabular-nums;">'+(i+1)+'.</span>'+
+            '<div style="display: flex; flex-direction: column; min-width: 0;"><span id="qt'+q.id+'" style="font-size: 14px; line-height: 20px; font-weight: 500; color: #111827;">'+esc(q.text)+'</span>'+
+              (q.help?'<span style="font-size: 13px; line-height: 20px; color: #64748B;">'+esc(q.help)+'</span>':'')+'</div>'+
+            '<div role="group" aria-labelledby="qt'+q.id+'" style="display: flex; gap: 8px;">'+CHOICES.map(function(c){var on=q.answer===c[0];return '<button type="button" data-ans="'+c[0]+'" aria-pressed="'+on+'" style="'+(on?CH_ON:CH_OFF)+'">'+c[1]+'</button>';}).join('')+'</div>'+
+            (q.answer==='yes'?'<div style="grid-column: 2 / -1;"><textarea class="tq-ta" data-det="'+q.id+'" rows="2" aria-label="Details for question '+q.id+'" placeholder="Anything we should know? (optional)">'+esc(q.details||'')+'</textarea></div>':'')+
+            (q.answer==='unsure'?'<span style="grid-column: 2 / -1; font-size: 12px; line-height: 16px; color: #64748B;">That’s fine. Your preparer will follow up.</span>':'')+
+          '</li>';
+        }).join('')+'</ol></section>';
+    root.innerHTML=h;
+  }
+
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('[data-ans]');
+    if(b){var id=+b.closest('[data-q]').dataset.q;P.answer(id,{answer:b.dataset.ans});render();P.refreshBadge();
+      var nb=root.querySelector('[data-q="'+id+'"] [data-ans="'+b.dataset.ans+'"]');if(nb)nb.focus();return;}
+    if(e.target.closest('#qSubmit')){
+      P.submitQuestionnaire();render();P.refreshBadge();A.toast('Thanks — your answers are with '+preparer+'.');
+    }
+  });
+  root.addEventListener('focusout',function(e){
+    var t=e.target;if(!t.matches||!t.matches('[data-det]'))return;
+    var id=+t.dataset.det,q=P.questionsOf(P.current().questionnaire).filter(function(x){return x.id===id;})[0];
+    if(q&&t.value!==(q.details||''))P.answer(id,{details:t.value});
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

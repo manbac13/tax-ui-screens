@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smith Family — Messages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#2F7D3B}a:hover{color:#1F5A29}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.tbl-scroll{overflow-x:auto}
+.row-link::after{content:"";position:absolute;inset:0}
+.crow{cursor:pointer;transition:background .15s}
+.crow:hover{background:#F8FAFC}
+.row-link:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+@media (min-width:1200px){.tbl-scroll{overflow:visible}}
+@media (min-width:1100px){.msg-shell{height:840px}.msg-shell>*{height:100%}}
+/* Messages tab: interactive states for the thread list, toolbars and contact panel */
+.msg-shell [hidden]{display:none!important}
+.tpill{height:28px;padding:0 10px;border:0;border-radius:14px;background:#F1F5F9;color:#334155;font:400 13px/16px Inter,system-ui,sans-serif;white-space:nowrap;cursor:pointer}
+.tpill:hover{background:#E2E8F0}
+.tpill[aria-pressed="true"]{background:#E3F1E5;color:#1F6A2E;font-weight:600}
+.tpill:focus-visible,.thr:focus-visible,.tib:focus-visible,.cab:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px}
+.thr{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:8px;text-decoration:none;transition:background .15s}
+.thr:hover{background:#F8FAFC}
+.thr[aria-current="true"]{background:#F1F5F9}
+.tib{flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:0;border-radius:999px;color:#334155;cursor:pointer;transition:background .15s}
+.tib:hover,.tib[aria-pressed="true"],.tib[aria-expanded="true"]{background:#F1F5F9}
+.cab{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:0;background:#F1F5F9;border:0;border-radius:999px;color:#334155;cursor:pointer;text-decoration:none;transition:background .15s}
+.cab:hover,.cab[aria-expanded="true"]{background:#E2E8F0;color:#111827}
+.mav{flex:none;box-sizing:border-box;border-radius:50%;border:1px solid #C4C0F4;background:#ECEBFD;color:#4338CA;line-height:16px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.sendbtn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:999px;background:#2F7D3B;color:#fff;cursor:pointer}
+.sendbtn:hover{background:#286C33}
+.sendbtn:disabled{background:#E2E8F0;color:#94A3B8;cursor:default}
+.asec{display:flex;flex-direction:column;gap:12px;padding:20px 0;border-top:1px solid #E5E7EB}
+.asec h3{margin:0;font-size:13px;line-height:16px;font-weight:600;color:#64748B}
+.arow{display:flex;align-items:flex-start;gap:12px}
+.arow .aic{flex:none;display:flex;margin-top:2px;color:#64748B}
+.arow>div{display:flex;flex-direction:column;min-width:0}
+.arow>div>span:first-child{font-size:13px;line-height:20px;color:#64748B}
+.arow>div>span:last-child{font-size:14px;line-height:20px;color:#111827;overflow-wrap:anywhere}
+.arow a:hover{text-decoration:underline!important}
+mark.hit{background:#FEF3C7;color:inherit;border-radius:3px;padding:0 1px}
+details.grp>summary{list-style:none;cursor:pointer}details.grp>summary::-webkit-details-marker{display:none}details.grp>summary .chev{transition:transform .15s}details.grp:not([open])>summary .chev{transform:rotate(-90deg)}details.grp>summary:focus-visible{outline:2px solid #2F7D3B;outline-offset:2px;border-radius:6px}.v2-banner{position:relative;overflow:hidden}.v2-banner>*{position:relative}.v2-banner>.v2-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(15,23,42,0.08) 0 1px,transparent 1px 16px);-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 72%,#000 100%)}
+</style>
+<script src="assets/guard.js"></script>
+<link rel="stylesheet" href="assets/acurat.css">
+</head>
+<body data-ctx="work">
+<script>(function(){var b=document.body,c=b.getAttribute("data-ctx"),v;try{v=localStorage.getItem("acurat.rail."+c)}catch(e){}if(v?v==="wide":c==="list")document.documentElement.classList.add("rail-wide");try{if(b.hasAttribute("data-focusable")&&sessionStorage.getItem("acurat.focus")==="1")b.classList.add("focus")}catch(e){}})();</script>
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><a class="logo" href="index.html"><b>A</b>CURAT</a><button class="rt" id="railToggle" aria-label="Collapse menu"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div class="group"><div class="sec">Platform</div>
+      <a href="index.html" aria-current="page" title="Clients"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg><span class="lbl">Clients</span></a>
+      <a href="engagements.html" title="Engagements"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg><span class="lbl">Engagements</span></a>
+      <a href="#" title="Review"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span class="lbl">Review</span></a>
+    </div>
+    <div class="group bottom">
+      <a href="admin.html" title="Administration"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Administration</span></a>
+      <a href="docs.html" title="Documentation"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg><span class="lbl">Documentation</span></a>
+      <a href="help.html" title="Help &amp; Support"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span class="lbl">Help &amp; Support</span></a>
+      <div class="me" title="demo@acurat.com"><div class="av" aria-hidden="true">D</div><div class="who lbl"><b>demo@acurat.com</b><span>ACCOUNT</span></div></div>
+    </div>
+  </nav>
+
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; background: #F8FAFC; display: flex; flex-direction: column;">
+<header class="ws-head">
+  <div class="ws-id">
+    <a href="index.html" class="hb" aria-label="Back to clients" title="Back to clients"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+    <div class="ws-av" aria-hidden="true">SF</div>
+    <div class="ws-title">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Clients</a><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg><span aria-current="page" style="color:#111827">Smith Family</span></nav>
+      <div class="ws-name"><h1>Smith Family</h1><span class="tag">Family office</span></div>
+    </div>
+    <div class="ws-sp"></div>
+    <div class="status"><span>John E Smith</span><i>·</i><span>(951) 555-0190</span></div>
+    <details class="switch more"><summary class="hb" aria-label="More actions" title="More actions"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></summary><div class="menu small" role="menu"><a href="#" role="menuitem"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Edit client</a><a href="#" role="menuitem"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6M9 15h6"/></svg>New engagement</a><a href="#" role="menuitem"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7 1.6 0 3 .5 4.2 1.3"/><path d="M19 14v6M16 17h6"/></svg>Add person</a></div></details>
+  </div>
+  <nav class="ws-tabs" aria-label="Client sections"><a href="smith-overview.html"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a><a href="smith-engagements.html"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Engagements<span class="ct ">6</span></a><a href="smith-people-access.html"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg>People &amp; access<span class="ct ">11</span></a><a href="smith-messages.html" aria-current="page"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.2 7.5L3 21l2-5.8A8.4 8.4 0 1 1 21 11.5z"/></svg>Messages<span class="ct alert">2</span></a><span class="tsp"></span></nav>
+</header>
+  <div class="ws-body" style="flex: 1; padding: 40px 40px 40px; display: flex; flex-direction: column; gap: 24px;">
+<div class="msg-shell" style="border: 1px solid #E5E7EB; border-radius: 12px; background: #FFFFFF; display: flex; flex-wrap: wrap; align-items: stretch; overflow: hidden;">
+      <!-- Thread list -->
+      <section aria-label="Threads" style="flex: 1 1 300px; max-width: 340px; min-width: 0; overflow-y: auto; display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px;">
+          <div role="group" aria-label="Filter threads" id="tFilter" style="display: flex; gap: 6px;"><button type="button" class="tpill" data-f="all" aria-pressed="true">All</button><button type="button" class="tpill" data-f="unread" aria-pressed="false">Unread</button><button type="button" class="tpill" data-f="open" aria-pressed="false">Open</button><button type="button" class="tpill" data-f="closed" aria-pressed="false">Closed</button></div>
+          <label class="cl-search" style="max-width:none;flex:none;height:32px"><svg aria-hidden="true" style="flex: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="sr">Search</span><input id="tq" type="search" placeholder="Search threads"></label>
+          <button type="button" class="add" id="newThread" aria-haspopup="dialog" style="height:32px;justify-content:center;width:100%"><svg aria-hidden="true" style="flex: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>New thread</button>
+        </div>
+        <nav aria-label="Message threads" id="tList" style="display: flex; flex-direction: column; gap: 4px; padding: 0 8px 16px;"></nav>
+      </section>
+
+      <!-- Conversation -->
+      <section aria-label="Conversation" style="flex: 999 1 420px; min-width: 0; border-left: 1px solid #E5E7EB; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 24px; border-bottom: 1px solid #F0F1F3;">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+            <div aria-hidden="true" class="mav" style="width: 40px; height: 40px; font-size: 13px;">JE</div>
+            <div style="display: flex; flex-direction: column; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0;"><h2 id="cTitle" style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 600; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></h2><span id="cStatus"></span></div>
+              <span id="cWith" style="font-size: 13px; line-height: 20px; font-weight: 400; color: #64748B;"></span>
+            </div>
+          </div>
+          <div role="toolbar" aria-label="Thread actions" style="display: flex; gap: 4px;">
+            <button type="button" class="tib" id="btnFind" aria-label="Search in thread" title="Search in thread" aria-pressed="false"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+            <button type="button" class="tib" id="btnFile" aria-label="File as PDF" title="File as PDF"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg></button>
+            <button type="button" class="tib" id="btnClose"></button>
+            <button type="button" class="tib" id="btnMore" aria-label="More thread actions" title="More thread actions"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+          </div>
+        </div>
+        <!-- Search in thread -->
+        <div id="findBar" hidden style="display: flex; align-items: center; gap: 8px; padding: 8px 24px; border-bottom: 1px solid #F0F1F3; background: #FFFFFF;">
+          <label class="cl-search" style="max-width:none;height:32px"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="sr">Search in thread</span><input id="findQ" type="search" placeholder="Search in this thread"></label>
+          <span id="findN" style="flex: none; font-size: 12px; line-height: 16px; color: #64748B; min-width: 64px;"></span>
+          <button type="button" class="tib" id="findX" aria-label="Close search" title="Close search"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div id="cBody" style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 32px 32px 8px; background: #F8FAFC;"></div>
+        <div style="padding: 8px 32px 24px; background: #F8FAFC;">
+          <div id="composerBox" style="border: 1px solid #E5E7EB; border-radius: 12px; background: #FFFFFF; padding: 12px 12px 8px; display: flex; flex-direction: column; gap: 8px;">
+            <label class="sr" for="composer">Message</label>
+            <div id="attachments" style="display: flex; flex-wrap: wrap; gap: 6px;" hidden></div>
+            <textarea id="composer" rows="2" placeholder="Write a message to John E…" style="width: 100%; box-sizing: border-box; padding: 4px; border: 0; resize: none; font-family: inherit; font-size: 14px; line-height: 20px; color: #111827; outline: none; background: transparent;"></textarea>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; gap: 4px;">
+                <button type="button" class="tib" id="btnAttach" aria-label="Attach file" title="Attach file"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11l-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/></svg></button>
+                <button type="button" class="tib" id="btnRequest" aria-label="Request document" title="Request document"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg></button>
+                <input type="file" id="fileIn" multiple hidden>
+              </div>
+              <button type="button" id="btnSend" class="sendbtn" disabled aria-label="Send" title="Send"><svg aria-hidden="true" style="flex: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+            </div>
+          </div>
+          <div id="closedBar" hidden style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border: 1px solid #E2E8F0; border-radius: 12px; background: #FFFFFF;">
+            <span style="font-size: 14px; line-height: 20px; color: #64748B;">This thread is closed. Reopen it to reply.</span>
+            <button type="button" class="dbtn sec" id="btnReopen" style="height: 32px;">Reopen thread</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact + thread details -->
+      <aside aria-label="Contact" style="flex: 1 1 300px; max-width: 360px; min-width: 0; overflow-y: auto; border-left: 1px solid #E5E7EB; display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 24px 16px;">
+          <div aria-hidden="true" style="width: 64px; height: 64px; border-radius: 50%; background: #2F7D3B; color: #FFFFFF; font-size: 20px; line-height: 28px; font-weight: 600; display: flex; align-items: center; justify-content: center;">JE</div>
+          <div style="display: flex; flex-direction: column; align-items: center;"><span style="font-size: 16px; line-height: 24px; font-weight: 600; color: #111827;">John E Smith</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">Taxpayer · Primary contact</span></div>
+          <div role="toolbar" aria-label="Contact actions" style="display: flex; gap: 8px; margin-top: 8px;">
+            <button type="button" class="cab" id="caCall" aria-label="Call" title="Call (951) 555-0190"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+            <button type="button" class="cab" id="caMsg" aria-label="Message" title="Write a message"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></button>
+            <a class="cab" id="caEmail" href="mailto:myfirm.client+1005@gmail.com" aria-label="Email" title="Email myfirm.client+1005@gmail.com"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+            <button type="button" class="cab" id="caMore" aria-label="More" title="More"><svg aria-hidden="true" style="flex: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; padding: 0 24px 24px;">
+          <section class="asec"><h3>Contact</h3>
+            <div class="arow"><span class="aic"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><div><span>Email</span><span><a href="mailto:myfirm.client+1005@gmail.com" style="color: #2F7D3B; text-decoration: none;">myfirm.client+1005@gmail.com</a></span></div></div>
+            <div class="arow"><span class="aic"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span><div><span>Phone</span><span><a href="tel:+19515550190" style="color: #111827; text-decoration: none;">(951) 555-0190</a></span></div></div>
+            <div class="arow"><span class="aic"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8"/><path d="M22 21c0-3-1.8-5.6-4.5-6.6"/></svg></span><div><span>Client</span><span><a href="smith-overview.html" style="color: #111827; text-decoration: none;">Smith Family</a></span></div></div>
+            <div class="arow"><span class="aic"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2"/><path d="M16 7l3 3"/><path d="M19 4l2 2"/></svg></span><div><span>Portal</span><span><a href="smith-people-access.html" style="color: #B45309; text-decoration: none;">Invite sent</a></span></div></div>
+          </section>
+          <section class="asec"><h3>Participants</h3><ul id="aParts" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;"></ul><div><button type="button" class="dbtn sec" id="btnAddPart" style="height: 32px; padding: 0 12px;"><svg aria-hidden="true" style="flex: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add participant</button></div></section>
+          <section class="asec"><h3>Linked items</h3><div id="aLinked" style="display: flex; flex-direction: column; gap: 12px;"></div></section>
+          <section class="asec"><h3>Notifications</h3><div id="aNotif" style="display: flex; flex-direction: column; gap: 12px;"></div><div><button type="button" class="dbtn sec" id="btnNotif" style="height: 32px; padding: 0 12px;">Notification settings</button></div></section>
+          <section class="asec"><h3>Activity</h3><ul id="aAct" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;"></ul><div><button type="button" class="dbtn sec" id="btnHistory" style="height: 32px; padding: 0 12px;" aria-expanded="false">View full history</button></div></section>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- New thread (ui_screens NewThreadDialog) -->
+  <div class="dlg-back" id="ntDlg" hidden>
+    <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="ntTitle" aria-describedby="ntSub">
+      <div class="dlg-h"><div><h2 id="ntTitle">New thread</h2><p id="ntSub">Start a separate conversation with John E Smith.</p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <form id="ntForm" novalidate>
+        <div class="dlg-b one" style="gap:20px">
+          <div class="dfld"><label for="ntSubject">Subject <i aria-hidden="true">*</i></label><input id="ntSubject" placeholder="What is this about?" autocomplete="off" autofocus></div>
+          <div class="dfld"><label for="ntMsg">First message <i aria-hidden="true">*</i></label><textarea id="ntMsg" rows="4" placeholder="Write your message…"></textarea></div>
+          <div class="dgrid">
+            <div class="dfld"><label id="ntWhoL">Who is in this thread</label>
+              <div role="group" aria-labelledby="ntWhoL" style="display:flex;flex-direction:column;gap:6px">
+                <label class="dchk"><input type="checkbox" checked disabled> John E Smith</label>
+                <label class="dchk"><input type="checkbox" id="ntSpouse"> Emily Smith <small>(spouse)</small></label>
+              </div>
+            </div>
+            <div class="dfld"><label for="ntLink">Link an item <small>(optional)</small></label><select id="ntLink"><option value="">None</option><option>Property tax statement</option><option>Closing statement</option><option>Charitable donation receipts</option><option>Lease agreement</option><option>W-2 (employer)</option></select></div>
+          </div>
+          <label class="dchk"><input type="checkbox" id="ntNotify" checked> Notify participants by email</label>
+        </div>
+        <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn" id="ntStart" disabled>Start thread</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- File thread as PDF (ui_screens FileThreadDialog) -->
+  <div class="dlg-back" id="fpDlg" hidden>
+    <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="fpTitle" aria-describedby="fpSub">
+      <div class="dlg-h"><div><h2 id="fpTitle">File thread as PDF</h2><p id="fpSub">Save a permanent record of this conversation.</p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <form id="fpForm" novalidate>
+        <div class="dlg-b one" style="gap:20px">
+          <div class="dsum"><b id="fpSubject"></b><span id="fpMeta"></span></div>
+          <div class="dfld"><label for="fpName">File name</label><input id="fpName" autocomplete="off" autofocus></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <p style="margin:0;font-size:14px;line-height:20px;color:#111827"><b style="font-weight:600">Saved to:</b> Documents → Shared with client</p>
+            <label class="dchk"><input type="checkbox" id="fpAtt" checked> Include attachments as a list of file names</label>
+            <label class="dchk"><input type="checkbox" id="fpPart" checked> Show participants, times and read status</label>
+            <label class="dchk"><input type="checkbox" id="fpClose"> Close the thread after filing</label>
+            <p class="hint" style="margin:0;font-size:12px;line-height:16px;color:#64748B">The PDF cannot be edited. The thread stays as it is, and filing is recorded in the activity history.</p>
+          </div>
+        </div>
+        <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn" id="fpGo">File as PDF</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add participant -->
+  <div class="dlg-back" id="apDlg" hidden>
+    <div class="dlg sm" role="dialog" aria-modal="true" aria-labelledby="apTitle" aria-describedby="apSub">
+      <div class="dlg-h"><div><h2 id="apTitle">Add participant</h2><p id="apSub">They'll see the whole thread, including earlier messages.</p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <form id="apForm" novalidate>
+        <div class="dlg-b one" style="gap:16px">
+          <div class="dfld" data-f="ap"><label for="apWho">Person <i aria-hidden="true">*</i></label><select id="apWho"><option value="">Choose a person</option></select><p class="ferr" id="apWho-err" hidden></p></div>
+          <label class="dchk"><input type="checkbox" id="apNotify" checked> Email them that they were added</label>
+        </div>
+        <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn">Add</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification settings -->
+  <div class="dlg-back" id="nsDlg" hidden>
+    <div class="dlg sm" role="dialog" aria-modal="true" aria-labelledby="nsTitle" aria-describedby="nsSub">
+      <div class="dlg-h"><div><h2 id="nsTitle">Notification settings</h2><p id="nsSub">How people hear about new messages in this thread.</p></div><button type="button" class="hb" data-dlg-close aria-label="Close" title="Close"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <form id="nsForm" novalidate>
+        <div class="dlg-b one" style="gap:16px">
+          <div class="dfld"><label for="nsYou">You</label><select id="nsYou"><option>In-app and email</option><option>In-app only</option><option>Email only</option><option>Off</option></select></div>
+          <div class="dfld"><label for="nsClient">John E</label><select id="nsClient"><option>Email immediately</option><option>Email after 15 min unread</option><option>Daily digest</option><option>No email</option></select><p class="hint">Reminders stop as soon as they open the thread.</p></div>
+        </div>
+        <div class="dlg-f"><button type="button" class="dbtn sec" data-dlg-close>Cancel</button><button type="submit" class="dbtn">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var IC=function(d,s){s=s||18;return '<svg aria-hidden="true" style="flex: none;" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';};
+  var I_DOC='<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>';
+
+  /* People who can be in a thread (avatar tones from the design system) */
+  var P={AS:{name:'Ashok Sudeep',role:'CPA',tone:'peach'},JE:{name:'John E Smith',short:'John E',role:'Taxpayer',tone:'indigo'},
+         ES:{name:'Emily Smith',short:'Emily',role:'Spouse',tone:'pink'},RK:{name:'Rita K.',role:'Senior preparer',tone:'blue'},SM:{name:'Sam M.',role:'Reviewer',tone:'blue'}};
+  var TONE={indigo:'border: 1px solid #C4C0F4; background: #ECEBFD; color: #4338CA;',peach:'border: 1px solid #F5CDB4; background: #FDEDE3; color: #9A3412;',
+            pink:'border: 1px solid #F2BCD8; background: #FCE7F3; color: #A3215F;',blue:'border: 1px solid #B7CFF7; background: #E0ECFD; color: #1D4ED8;'};
+  var av=function(k,size){var p=P[k];size=size||32;return '<div aria-hidden="true" style="flex: none; width: '+size+'px; height: '+size+'px; box-sizing: border-box; border-radius: 50%; '+TONE[p.tone]+' font-size: '+(size>=40?13:12)+'px; line-height: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center;">'+k+'</div>';};
+  var ME='AS';
+
+  /* ---------- Threads (thread 1 matches the original page) ---------- */
+  var THREADS=[
+    {id:'t1',subject:'Rental property documents',status:'Open',time:'3:22 PM',unread:2,typing:true,
+     request:{title:'Closing statement',by:'Requested by Ashok Sudeep · Oct 14'},
+     items:[{t:'meta',text:'Seen by John E · Oct 14, 11:20 AM'},{t:'date',text:'Today, 3:21 PM'},{t:'new'},
+       {t:'msg',from:'JE',time:'3:21 PM',body:'Here is the closing statement. The lease is coming tomorrow.',attach:{name:'Condo_closing_statement.pdf',size:'1.2 MB',type:'PDF'}},
+       {t:'meta',text:'Condo_closing_statement.pdf was matched to Closing statement'},
+       {t:'msg',from:'JE',time:'3:22 PM',edited:true,body:'I will upload the lease tomorrow.'}],
+     parts:['AS','JE'],linked:[{name:'Closing statement',status:'Waiting'}],notif:{you:'In-app and email',client:'Email after 15 min unread'},
+     activity:[{label:'Thread started by Ashok Sudeep',when:'Oct 14 · 10:12 AM'},{label:'John E first opened this thread',when:'Oct 14 · 10:35 AM'},{label:'Email notification sent to John E',when:'Oct 14 · 11:05 AM'},
+       {label:'File attached: Condo_closing_statement.pdf',when:'Oct 16 · 3:21 PM'},{label:'Message edited by John E Smith',when:'Oct 16 · 3:23 PM'}]},
+    {id:'t2',subject:'Estimated payments',status:'Open',time:'Oct 15',unread:0,
+     items:[{t:'date',text:'Oct 14'},{t:'msg',from:'JE',time:'9:40 AM',body:'When is the next estimated payment due, and how much should we send?'},
+       {t:'date',text:'Oct 15'},{t:'msg',from:'AS',time:'4:05 PM',body:'Your Q4 voucher is ready. The federal payment is due Jan 15 and California is due the same day.',attach:{name:'2026_Q4_1040-ES_voucher.pdf',size:'240 KB',type:'PDF'}},
+       {t:'meta',text:'Seen by John E · Oct 15, 6:12 PM'}],
+     parts:['AS','JE'],linked:[{name:'Q4 estimated payment voucher',status:'Shared'}],notif:{you:'In-app and email',client:'Email after 15 min unread'},
+     activity:[{label:'Thread started by John E Smith',when:'Oct 14 · 9:40 AM'},{label:'File attached: 2026_Q4_1040-ES_voucher.pdf',when:'Oct 15 · 4:05 PM'},{label:'John E opened the voucher',when:'Oct 15 · 6:12 PM'}]},
+    {id:'t3',subject:'Engagement letter question',status:'Closed',filed:true,time:'Oct 10',unread:0,
+     items:[{t:'date',text:'Oct 9'},{t:'msg',from:'JE',time:'2:14 PM',body:'Does the engagement letter cover the California return too?'},
+       {t:'msg',from:'AS',time:'2:40 PM',body:'Yes. Federal and California are both in scope; section 2 of the letter lists them.'},
+       {t:'date',text:'Oct 10'},{t:'msg',from:'JE',time:'8:55 AM',body:'Thanks, that answers it.'},{t:'meta',text:'Thread closed and filed as PDF by Ashok Sudeep · Oct 10'}],
+     parts:['AS','JE'],linked:[{name:'Engagement letter',status:'Viewed'}],notif:{you:'In-app only',client:'Email after 15 min unread'},
+     activity:[{label:'Thread started by John E Smith',when:'Oct 9 · 2:14 PM'},{label:'Thread filed as PDF by Ashok Sudeep',when:'Oct 10 · 9:02 AM'},{label:'Thread closed by Ashok Sudeep',when:'Oct 10 · 9:02 AM'}]}];
+  var sel='t1', filter='all', showAll=false, findOn=false, files=[];
+  var cur=function(){return THREADS.filter(function(t){return t.id===sel;})[0];};
+  function preview(t){
+    if(t.status==='Closed'&&t.filed)return 'Closed · Filed as PDF';
+    var m=t.items.filter(function(i){return i.t==='msg';}).pop();if(!m)return '';
+    return (m.from===ME?'You':(P[m.from].short||P[m.from].name))+': '+m.body;
+  }
+  var STATUS=function(s){return s==='Open'?'<span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; box-sizing: border-box; padding: 0 8px; border: 1px solid #BBF7D0; border-radius: 6px; background: #F0FDF4; font-size: 13px; line-height: 16px; font-weight: 500; color: #15803D; white-space: nowrap;">Open</span>'
+                                       :'<span style="display: inline-flex; align-items: center; height: 24px; box-sizing: border-box; padding: 0 8px; border: 1px solid #E2E8F0; border-radius: 6px; background: #F8FAFC; font-size: 13px; line-height: 16px; font-weight: 400; color: #334155; white-space: nowrap;">Closed</span>';};
+
+  /* ---------- Thread list ---------- */
+  function renderList(){
+    var q=$('tq').value.trim().toLowerCase();
+    var list=THREADS.filter(function(t){
+      if(filter==='unread'&&!t.unread)return false;
+      if(filter==='open'&&t.status!=='Open')return false;
+      if(filter==='closed'&&t.status!=='Closed')return false;
+      if(q&&(t.subject+' '+preview(t)+' '+t.items.map(function(i){return i.body||'';}).join(' ')).toLowerCase().indexOf(q)<0)return false;
+      return true;
+    });
+    $('tList').innerHTML=list.length?list.map(function(t){
+      return '<a href="#" class="thr" data-id="'+t.id+'"'+(t.id===sel?' aria-current="true"':'')+'>'+av('JE',40)+
+        '<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">'+
+          '<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+esc(t.subject)+'</span><span style="flex: none; font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">'+esc(t.time)+'</span></span>'+
+          '<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;"><span style="font-size: 13px; line-height: 20px; font-weight: 400; color: #64748B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">'+esc(preview(t))+'</span>'+
+            (t.unread?'<span aria-label="'+t.unread+' unread" style="flex: none; min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #FAD4D4; color: #B42318; font-size: 12px; line-height: 20px; font-weight: 600; text-align: center;">'+t.unread+'</span>':'')+'</span>'+
+          (t.status==='Closed'?'<span style="margin-top: 4px;">'+STATUS('Closed')+'</span>':'')+
+        '</span></a>';
+    }).join(''):'<p style="margin: 8px; padding: 24px 8px; text-align: center; font-size: 13px; line-height: 20px; color: #64748B;">No threads match.'+(filter!=='all'||q?' <button type="button" class="lnk" id="tClear">Show all</button>':'')+'</p>';
+    document.querySelectorAll('#tFilter .tpill').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.f===filter?'true':'false');});
+    // Messages tab badge = unread across threads
+    var n=THREADS.reduce(function(s,t){return s+t.unread;},0),ct=document.querySelector('.ws-tabs a[aria-current] .ct');
+    if(ct){ct.textContent=n;ct.hidden=!n;}
+  }
+
+  /* ---------- Conversation ---------- */
+  function hl(text){
+    var q=findOn?$('findQ').value.trim():'';text=esc(text);
+    if(!q)return text;
+    var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/&/g,'&amp;').replace(/</g,'&lt;')+')','gi');
+    return text.replace(re,'<mark class="hit">$1</mark>');
+  }
+  function renderThread(){
+    var t=cur();if(!t)return;
+    $('cTitle').textContent=t.subject;$('cStatus').innerHTML=STATUS(t.status);
+    var others=t.parts.filter(function(k){return k!==ME;});
+    $('cWith').textContent='With '+others.map(function(k){return P[k].name;}).join(', ')+(others.length===1?' · '+P[others[0]].role:'');
+    var open=t.status==='Open';
+    $('btnClose').innerHTML=open?IC('<path d="M20 6L9 17l-5-5"/>'):IC('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>');
+    $('btnClose').title=$('btnClose').ariaLabel=open?'Close thread':'Reopen thread';$('btnClose').setAttribute('aria-label',$('btnClose').title);
+    var h='';
+    if(t.request)h+='<div style="width: 100%; box-sizing: border-box; padding: 16px; border: 1px solid #D6E9DA; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px;">'+
+        '<div style="display: flex; flex-direction: column;"><span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: #2F7D3B;">Document request</span><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827;">'+hl(t.request.title)+'</span><span style="font-size: 13px; line-height: 20px; font-weight: 400; color: #64748B;">'+esc(t.request.by)+'</span></div>'+
+        '<div><a href="engagement-documents.html" class="dbtn sec" style="height: 32px; padding: 0 12px; text-decoration: none;">Open request</a></div></div>';
+    t.items.forEach(function(i){
+      if(i.t==='meta'||i.t==='date')h+='<div style="align-self: center; font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B; text-align: center;">'+hl(i.text)+'</div>';
+      else if(i.t==='new'){if(t.newCount)h+='<div style="display: flex; align-items: center; gap: 12px;"><span style="flex: 1; height: 1px; background: #F4B9A0;"></span><span style="font-size: 12px; line-height: 16px; font-weight: 600; color: #C2410C;">'+t.newCount+' new message'+(t.newCount>1?'s':'')+'</span><span style="flex: 1; height: 1px; background: #F4B9A0;"></span></div>';}
+      else{
+        var mine=i.from===ME;
+        h+='<div style="display: flex; align-items: flex-start; gap: 12px;'+(mine?' flex-direction: row-reverse;':'')+'">'+av(i.from)+
+          '<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: '+(mine?'flex-end':'flex-start')+'; gap: 4px;">'+
+            '<div style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827;">'+(mine?'You':esc(P[i.from].name))+'</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">· '+esc(i.time)+(i.edited?' · edited':'')+'</span></div>'+
+            '<div style="max-width: 520px; padding: 12px 16px; border: 1px solid '+(mine?'#D6E9DA':'#E5E7EB')+'; border-radius: '+(mine?'12px 4px 12px 12px':'4px 12px 12px 12px')+'; background: '+(mine?'#F2F8F3':'#FFFFFF')+'; display: flex; flex-direction: column; gap: 12px;">'+
+              '<span style="font-size: 14px; line-height: 20px; font-weight: 400; color: #111827;">'+hl(i.body)+'</span>'+
+              (i.attach?'<span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 6px; background: #FFFFFF; align-self: flex-start;"><span style="padding: 0 4px; border: 1px solid #E2E8F0; border-radius: 4px; font-size: 11px; line-height: 16px; font-weight: 600; color: #64748B;">'+i.attach.type+'</span><a href="#" class="att" data-file="'+esc(i.attach.name)+'" style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827; text-decoration: none;">'+hl(i.attach.name)+'</a><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">'+i.attach.size+'</span></span>':'')+
+            '</div></div></div>';
+      }
+    });
+    if(t.typing&&open)h+='<div aria-live="polite" style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">John E is typing…</div>';
+    $('cBody').innerHTML=h;
+    if(findOn){var n=$('cBody').querySelectorAll('mark.hit').length;$('findN').textContent=$('findQ').value.trim()?n+' match'+(n===1?'':'es'):'';var m=$('cBody').querySelector('mark.hit');if(m&&m.scrollIntoView)m.scrollIntoView({block:'center'});}
+    else $('cBody').scrollTop=$('cBody').scrollHeight;
+    $('composerBox').hidden=!open;$('closedBar').hidden=open;
+    renderAside();
+  }
+
+  /* ---------- Right panel ---------- */
+  var ROW=function(icon,label,value){return '<div class="arow"><span class="aic">'+IC(icon,16)+'</span><div><span>'+esc(label)+'</span><span>'+value+'</span></div></div>';};
+  var STATUS_CLR={Waiting:'#B45309',Shared:'#15803D',Viewed:'#475569',Requested:'#B45309'};
+  function renderAside(){
+    var t=cur();
+    $('aParts').innerHTML=t.parts.map(function(k){return '<li style="display: flex; align-items: center; gap: 12px;">'+av(k)+'<div style="display: flex; flex-direction: column;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #111827;">'+esc(P[k].name)+(k===ME?' <span style="font-weight:400;color:#64748B">(you)</span>':'')+'</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">'+esc(P[k].role)+'</span></div></li>';}).join('');
+    $('btnAddPart').disabled=!Object.keys(P).some(function(k){return t.parts.indexOf(k)<0;});
+    $('aLinked').innerHTML=t.linked.length?t.linked.map(function(l){return ROW(I_DOC,l.name,'<a href="engagement-documents.html" style="color: '+(STATUS_CLR[l.status]||'#111827')+'; text-decoration: none;">'+esc(l.status)+'</a>');}).join(''):'<span style="font-size: 13px; line-height: 20px; color: #64748B;">Nothing linked to this thread.</span>';
+    $('aNotif').innerHTML=ROW('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>','You',esc(t.notif.you))+ROW('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>','John E',esc(t.notif.client));
+    var acts=showAll?t.activity:t.activity.slice(-3);
+    $('aAct').innerHTML=acts.slice().reverse().map(function(a){return '<li style="display: flex; flex-direction: column;"><span style="font-size: 14px; line-height: 20px; font-weight: 400; color: #111827;">'+esc(a.label)+'</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: #64748B;">'+esc(a.when)+'</span></li>';}).join('');
+    $('btnHistory').hidden=t.activity.length<=3;$('btnHistory').textContent=showAll?'Show less':'View full history';$('btnHistory').setAttribute('aria-expanded',showAll?'true':'false');
+  }
+
+  function select(id,initial){
+    var t=THREADS.filter(function(x){return x.id===id;})[0];if(!t)return;
+    sel=id;showAll=false;t.newCount=t.unread;
+    if(!initial)t.unread=0; // clicking a thread reads it; the "new" divider stays for this visit (first load keeps the badge, as designed)
+    files=[];renderFiles();$('composer').value='';syncSend();
+    renderList();renderThread();
+  }
+  function log(t,label){t.activity.push({label:label,when:'Just now'});}
+
+  /* ---------- Events: list ---------- */
+  $('tList').addEventListener('click',function(e){
+    if(e.target.id==='tClear'){filter='all';$('tq').value='';renderList();return;}
+    var a=e.target.closest('.thr');if(!a)return;e.preventDefault();select(a.dataset.id);
+  });
+  $('tFilter').addEventListener('click',function(e){var b=e.target.closest('.tpill');if(!b)return;filter=b.dataset.f;renderList();});
+  $('tq').addEventListener('input',renderList);
+
+  /* ---------- Events: thread toolbar ---------- */
+  function setFind(on){findOn=on;$('findBar').hidden=!on;$('btnFind').setAttribute('aria-pressed',on?'true':'false');if(on){$('findQ').value='';$('findN').textContent='';setTimeout(function(){$('findQ').focus();},0);}renderThread();if(!on)$('btnFind').focus();}
+  $('btnFind').onclick=function(){setFind(!findOn);};
+  $('findX').onclick=function(){setFind(false);};
+  $('findQ').addEventListener('input',renderThread);
+  $('findQ').addEventListener('keydown',function(e){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();setFind(false);}});
+  function toggleClosed(){
+    var t=cur(),closing=t.status==='Open';t.status=closing?'Closed':'Open';if(!closing)t.filed=false;
+    log(t,(closing?'Thread closed':'Thread reopened')+' by Ashok Sudeep');
+    renderList();renderThread();Acurat.toast(closing?'Thread closed':'Thread reopened','info');
+  }
+  $('btnClose').onclick=toggleClosed;$('btnReopen').onclick=toggleClosed;
+  $('btnMore').onclick=function(){
+    var t=cur();
+    Acurat.menu(this,[
+      {label:'Mark as unread',icon:IC('<circle cx="12" cy="12" r="4"/><path d="M21 12a9 9 0 1 1-9-9"/>',16),onClick:function(){
+        var n=t.items.filter(function(i){return i.t==='msg'&&i.from!==ME;}).length?1:0;
+        t.unread=Math.max(1,t.newCount||n);renderList();Acurat.toast('Marked as unread','info');}},
+      {label:'Copy link',icon:IC('<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',16),onClick:function(){
+        var url=location.href.split('#')[0]+'#'+t.id;try{navigator.clipboard.writeText(url);}catch(err){}Acurat.toast('Link copied');}}]);
+  };
+
+  /* ---------- Events: conversation + composer ---------- */
+  $('cBody').addEventListener('click',function(e){var a=e.target.closest('.att');if(a){e.preventDefault();Acurat.toast('Downloading '+a.dataset.file,'info');}});
+  function syncSend(){var on=!!($('composer').value.trim()||files.length);$('btnSend').disabled=!on;}
+  $('composer').addEventListener('input',syncSend);
+  $('btnSend').onclick=function(){Acurat.toast('Sending messages isn’t part of this demo yet','info');};
+  $('btnAttach').onclick=function(){$('fileIn').click();};
+  $('fileIn').addEventListener('change',function(){Array.prototype.forEach.call(this.files,function(f){files.push({name:f.name,size:f.size});});this.value='';renderFiles();syncSend();});
+  function renderFiles(){
+    $('attachments').hidden=!files.length;
+    $('attachments').innerHTML=files.map(function(f,i){var kb=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB';
+      return '<span class="acs-tag" style="background:#F1F5F9">'+IC('<path d="M21 11l-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>',14)+esc(f.name)+' <small style="color:#64748B;font-weight:400">'+kb+'</small><i role="button" tabindex="0" data-rm="'+i+'" aria-label="Remove '+esc(f.name)+'">×</i></span>';}).join('');
+  }
+  $('attachments').addEventListener('click',function(e){var x=e.target.closest('[data-rm]');if(x){files.splice(+x.dataset.rm,1);renderFiles();syncSend();}});
+  $('btnRequest').onclick=function(){
+    var t=cur(),opts=['Lease agreement','Property tax statement','Charitable donation receipts','W-2 (employer)'];
+    Acurat.menu(this,opts.map(function(o){return {label:o,icon:IC(I_DOC,16),onClick:function(){
+      if(!t.linked.some(function(l){return l.name===o;}))t.linked.push({name:o,status:'Requested'});
+      log(t,'Document requested: '+o);renderAside();Acurat.toast('Document request added: '+o);}};}));
+  };
+
+  /* ---------- Events: contact panel ---------- */
+  $('caCall').onclick=function(){Acurat.toast('Calling John E Smith · (951) 555-0190','info');};
+  $('caMsg').onclick=function(){var t=cur();if(t.status!=='Open'){Acurat.toast('This thread is closed. Reopen it to reply.','info');return;}$('composer').focus();};
+  $('caMore').onclick=function(){
+    Acurat.menu(this,[
+      {label:'View in People & access',icon:IC('<circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/>',16),onClick:function(){location.href='smith-people-access.html';}},
+      {label:'Copy email',icon:IC('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',16),onClick:function(){try{navigator.clipboard.writeText('myfirm.client+1005@gmail.com');}catch(err){}Acurat.toast('Email copied');}},
+      {label:'Copy phone number',icon:IC('<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7"/>',16),onClick:function(){try{navigator.clipboard.writeText('(951) 555-0190');}catch(err){}Acurat.toast('Phone number copied');}}]);
+  };
+  $('btnHistory').onclick=function(){showAll=!showAll;renderAside();};
+
+  /* ---------- Dialogs ---------- */
+  var D={};
+  function dlg(id,onOpen){if(!D[id])D[id]=Acurat.dialog($(id),{onOpen:onOpen});return D[id];}
+
+  // New thread — Start is disabled until subject + message (same as ui_screens)
+  var syncStart=function(){$('ntStart').disabled=!($('ntSubject').value.trim()&&$('ntMsg').value.trim());};
+  $('ntSubject').addEventListener('input',syncStart);$('ntMsg').addEventListener('input',syncStart);
+  $('newThread').onclick=function(){dlg('ntDlg',function(){$('ntSubject').value='';$('ntMsg').value='';$('ntLink').value='';$('ntSpouse').checked=false;$('ntNotify').checked=true;syncStart();}).open();};
+  $('ntForm').addEventListener('submit',function(e){
+    e.preventDefault();if($('ntStart').disabled)return;
+    var subject=$('ntSubject').value.trim(),msg=$('ntMsg').value.trim(),link=$('ntLink').value,parts=['AS','JE'];if($('ntSpouse').checked)parts.push('ES');
+    var t={id:'t-'+Date.now(),subject:subject,status:'Open',time:'Just now',unread:0,parts:parts,
+      items:[{t:'date',text:'Today'},{t:'msg',from:ME,time:'Just now',body:msg},{t:'meta',text:'Delivered'+($('ntNotify').checked?' · email notification sent':'')}],
+      linked:link?[{name:link,status:'Waiting'}]:[],notif:{you:'In-app and email',client:'Email after 15 min unread'},activity:[{label:'Thread started by Ashok Sudeep',when:'Just now'}]};
+    THREADS.unshift(t);filter='all';$('tq').value='';D.ntDlg.close();select(t.id);
+    Acurat.toast('Thread started: '+subject);
+  });
+
+  // File thread as PDF
+  $('btnFile').onclick=function(){
+    var t=cur();
+    dlg('fpDlg',function(){
+      var c=cur(),msgs=c.items.filter(function(i){return i.t==='msg';}),att=msgs.filter(function(i){return i.attach;}).length,first=c.activity[0]?c.activity[0].when.split(' · ')[0]:'Today';
+      $('fpSubject').textContent=c.subject;
+      $('fpMeta').textContent=msgs.length+' message'+(msgs.length===1?'':'s')+' · '+first+' to Oct 16, 2026 · '+att+' attachment'+(att===1?'':'s');
+      $('fpName').value='Message record · '+c.subject+' · Oct 16, 2026';
+      $('fpAtt').checked=true;$('fpPart').checked=true;$('fpClose').checked=false;$('fpGo').disabled=false;
+    }).open();
+  };
+  $('fpName').addEventListener('input',function(){$('fpGo').disabled=!this.value.trim();});
+  $('fpForm').addEventListener('submit',function(e){
+    e.preventDefault();if($('fpGo').disabled)return;
+    var t=cur(),name=$('fpName').value.trim();
+    log(t,'Thread filed as PDF by Ashok Sudeep');
+    if($('fpClose').checked){t.status='Closed';t.filed=true;log(t,'Thread closed by Ashok Sudeep');}
+    D.fpDlg.close();renderList();renderThread();
+    Acurat.toast(name+' saved to Documents → Shared with client');
+  });
+
+  // Add participant
+  $('btnAddPart').onclick=function(){
+    dlg('apDlg',function(){
+      var t=cur(),s=$('apWho');while(s.options.length>1)s.remove(1);
+      Object.keys(P).filter(function(k){return t.parts.indexOf(k)<0;}).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=P[k].name;o.setAttribute('data-desc',P[k].role);s.appendChild(o);});
+      s.value='';$('apNotify').checked=true;var w=document.querySelector('[data-f="ap"]');w.classList.remove('err');$('apWho-err').hidden=true;
+    }).open();
+  };
+  $('apWho').addEventListener('change',function(){if(this.value){document.querySelector('[data-f="ap"]').classList.remove('err');$('apWho-err').hidden=true;}});
+  $('apForm').addEventListener('submit',function(e){
+    e.preventDefault();var k=$('apWho').value;
+    if(!k){document.querySelector('[data-f="ap"]').classList.add('err');$('apWho-err').textContent='Choose a person';$('apWho-err').hidden=false;$('apWho')._acs.btn.focus();return;}
+    var t=cur();t.parts.push(k);log(t,P[k].name+' added by Ashok Sudeep');
+    D.apDlg.close();renderThread();Acurat.toast(P[k].name+' added to this thread'+($('apNotify').checked?' · email sent':''));
+  });
+
+  // Notification settings
+  $('btnNotif').onclick=function(){dlg('nsDlg',function(){var t=cur();$('nsYou').value=t.notif.you;$('nsClient').value=t.notif.client;}).open();};
+  $('nsForm').addEventListener('submit',function(e){
+    e.preventDefault();var t=cur();t.notif={you:$('nsYou').value,client:$('nsClient').value};log(t,'Notification settings changed');
+    D.nsDlg.close();renderAside();Acurat.toast('Notification settings saved');
+  });
+
+  // Deep link (#t2) from "Copy link"
+  var hash=location.hash.replace('#','');
+  select(THREADS.some(function(t){return t.id===hash;})?hash:'t1',true);
+})();
+</script>
+  </main>
+</div>
+<script src="assets/acurat.js"></script>
+<script src="assets/client.js"></script>
+</body>
+</html>
